@@ -187,7 +187,9 @@ export class ShopCategoryRepo extends ITakaroRepo<
           listingCount,
           parent: category.parent ? await this.modelToDTO(category.parent) : undefined,
           children: category.children
-            ? await Promise.all(category.children.map((child) => this.modelToDTO(child)))
+            ? (await Promise.all(category.children.map((child) => this.modelToDTO(child)))).sort((a, b) =>
+                a.name.localeCompare(b.name),
+              )
             : undefined,
         });
       }),
@@ -276,7 +278,11 @@ export class ShopCategoryRepo extends ITakaroRepo<
       updatedAt: res.updatedAt,
       listingCount,
       parent: res.parent ? await this.modelToDTO(res.parent) : undefined,
-      children: res.children ? await Promise.all(res.children.map((child) => this.modelToDTO(child))) : undefined,
+      children: res.children
+        ? (await Promise.all(res.children.map((child) => this.modelToDTO(child)))).sort((a, b) =>
+            a.name.localeCompare(b.name),
+          )
+        : undefined,
     });
   }
 

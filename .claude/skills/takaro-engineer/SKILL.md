@@ -1,6 +1,6 @@
 ---
 name: takaro-engineer
-description: Takaro repository knowledge - monorepo structure, tests, Docker setup, debugging, database migrations. Use when working on this codebase, running tests, debugging issues, or understanding the project structure. (project)
+description: Takaro repository knowledge - monorepo structure, tests, Docker setup, debugging, database migrations, brittle test investigation. Use when working on this codebase, running tests, debugging issues, investigating flaky tests, or understanding the project structure. (project)
 ---
 
 # Takaro Engineer
@@ -60,6 +60,7 @@ packages/
 - [DEV-ENVIRONMENT.md](DEV-ENVIRONMENT.md) - Dev data setup, credentials, Playwright testing
 - [TESTING.md](TESTING.md) - Test framework, commands, debugging failures
 - [DEBUGGING.md](DEBUGGING.md) - CI failures, log analysis, domain ID tracing
+- [BRITTLE-TESTS.md](BRITTLE-TESTS.md) - Investigating and fixing flaky tests
 - [DATABASE.md](DATABASE.md) - Multi-tenancy, migrations, useful queries
 - [DOCKER.md](DOCKER.md) - Services, exec commands, compose files
 - [API.md](API.md) - Controller patterns, adding endpoints, permissions

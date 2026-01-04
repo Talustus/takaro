@@ -1,5 +1,5 @@
 import { getKnex, ITakaroQuery, TakaroModel, NOT_DOMAIN_SCOPED_TakaroModel } from '@takaro/db';
-import { TakaroDTO, logger, ctx, errors } from '@takaro/util';
+import { TakaroDTO, logger, ctx } from '@takaro/util';
 import { ModelClass, QueryBuilder } from 'objection';
 import { Knex } from 'knex';
 
@@ -52,23 +52,6 @@ export abstract class ITakaroRepo<
 
   async getKnex() {
     return getKnex();
-  }
-
-  /**
-   * Find one record for update (with row locking)
-   * Uses context transaction if available
-   */
-  async findOneForUpdate(id: string): Promise<OutputDTO> {
-    const { query } = await this.getModel();
-    const res = await query.where('id', id).forUpdate().first();
-
-    if (!res) {
-      throw new errors.NotFoundError(`Resource with id ${id} not found`);
-    }
-
-    // Since we don't have access to the specific OutputDTO class here,
-    // we'll just return the JSON. Subclasses should override if needed.
-    return res.toJSON() as unknown as OutputDTO;
   }
 
   /**

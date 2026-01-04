@@ -131,16 +131,4 @@ export class ShopOrderRepo extends ITakaroRepo<
   async delete(_id: string): Promise<boolean> {
     throw new errors.NotImplementedError();
   }
-
-  // Override base class findOneForUpdate to return proper DTO
-  async findOneForUpdate(id: string): Promise<ShopOrderOutputDTO> {
-    const { query } = await this.getModel();
-    const res = await query.where('id', id).forUpdate().first();
-
-    if (!res) {
-      throw new errors.NotFoundError(`Resource with id ${id} not found`);
-    }
-
-    return new ShopOrderOutputDTO(res);
-  }
 }

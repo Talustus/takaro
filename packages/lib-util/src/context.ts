@@ -61,8 +61,11 @@ class Context {
       return callback();
     }
 
-    // Start new transaction and store in context
+    // Start new transaction with REPEATABLE READ isolation level
     return knex.transaction(async (trx) => {
+      // Set isolation level to REPEATABLE READ for consistent snapshot isolation
+      await trx.raw('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+
       this.addData({ transaction: trx });
       try {
         const result = await callback();

@@ -43,5 +43,25 @@ export abstract class TakaroWorker<T> {
     this.bullWorker.on('completed', (job) => {
       this.log.debug(`Job ${job.id} completed`);
     });
+
+    this.bullWorker.on('stalled', (jobId, prev) => {
+      this.log.warn(`Job ${jobId} stalled`, { worker: name, jobId, previousState: prev });
+    });
+
+    // Handle worker-level errors
+    this.bullWorker.on('error', (err) => {
+      this.log.error('Worker error', { error: err.message, worker: name });
+    });
+
+    // Handle Redis connection issues - exit to get clean restart
+    // When Redis disconnects and reconnects, BullMQ workers can get stuck with
+    // "ghost" active jobs where lock extension resumes but job processor promises
+    // remain stuck.
+    // Workers without a Redis connection are useless anyways.
+    this.bullWorker.on('ioredis:close', () => {
+      this.log.error('Redis connection closed - exiting worker for clean restart', { worker: name });
+      // Give time for logs to flush, then exit
+      setTimeout(() => process.exit(1), 1000);
+    });
   }
 }

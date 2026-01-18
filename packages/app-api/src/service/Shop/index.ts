@@ -307,29 +307,33 @@ export class ShopListingService extends TakaroService<
     const playerService = new PlayerService(this.domainId);
     const { pogs } = await playerService.resolveFromId(initialOrder.playerId, gameServerId);
     const pog = pogs.find((pog) => pog.gameServerId === gameServerId);
-    if (!pog) throw new errors.BadRequestError('You have not logged in to the game server yet.');
+    if (!pog) throw new errors.BadRequestError('You must join the game server before claiming orders.');
     if (!pog.online)
       throw new errors.BadRequestError(
         'You must be online in the game server to claim the order. If you have just logged in, please wait a few seconds and try again.',
       );
 
-    // Phase 1: Quick database transaction to update order status
+    // Phase 1: Quick database transaction to update order status using optimistic locking
     const transactionResult = await ctx.runInTransaction(knex, async () => {
-      // Lock the order row for update to prevent concurrent claims
-      const order = await this.orderRepo.findOneForUpdate(orderId);
-      if (!order) throw new errors.NotFoundError(`Shop order with id ${orderId} not found`);
+      // Atomic UPDATE with WHERE clause prevents race conditions (optimistic locking)
+      const { query } = await this.orderRepo.getModel();
+      const numUpdated = await query
+        .where('id', orderId)
+        .where('status', ShopOrderStatus.PAID)
+        .update({ status: ShopOrderStatus.COMPLETED, updatedAt: new Date().toISOString() });
 
-      // Check status again within the transaction with the lock held
-      if (order.status !== ShopOrderStatus.PAID)
-        throw new errors.BadRequestError(`Can only claim paid, unclaimed orders. Current status: ${order.status}`);
+      // If no rows were updated, the order was either not found or already claimed
+      if (numUpdated === 0) {
+        const currentOrder = await this.orderRepo.findOne(orderId);
+        if (!currentOrder) throw new errors.NotFoundError(`Shop order with id ${orderId} not found`);
+        throw new errors.BadRequestError(
+          `Can only claim paid, unclaimed orders. Current status: ${currentOrder.status}`,
+        );
+      }
 
-      // Update status immediately after checking to minimize race condition window
-      const updatedOrder = await this.orderRepo.update(
-        orderId,
-        new ShopOrderUpdateDTO({ status: ShopOrderStatus.COMPLETED }),
-      );
-
-      return { updatedOrder, order };
+      // Fetch the updated order
+      const updatedOrder = await this.orderRepo.findOne(orderId);
+      return { updatedOrder, order: initialOrder };
     });
 
     // Phase 2: Make external game server calls (outside of transaction)

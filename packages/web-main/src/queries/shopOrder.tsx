@@ -125,12 +125,6 @@ export const useShopOrderClaim = () => {
           queryClient.setQueryData<ShopOrderOutputDTO>(shopOrderKeys.detail(shopOrderId), updatedShopOrder);
         }
       },
-      onError: () => {
-        enqueueSnackbar('Failed to claim order. The player should be online to claim the order!', {
-          variant: 'default',
-          type: 'error',
-        });
-      },
     }),
     {},
   );

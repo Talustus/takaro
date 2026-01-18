@@ -225,7 +225,7 @@ export class ModuleController {
                     name: _.name,
                     description: _.description,
                     eventType: _.eventType,
-                    regex: _.regex,
+                    regex: _.regex ?? '',
                   }),
               ),
             ),

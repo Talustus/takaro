@@ -104,17 +104,11 @@ export class ModuleVersion extends TakaroModel {
     return {
       ...baseModifiers,
       // Loads a bunch of related data we always need for the DTO
+      // Using a single relation expression is more efficient than chaining multiple withGraphFetched calls
       standardExtend(query: Objection.QueryBuilder<Model>) {
-        query
-          .withGraphFetched('hooks')
-          .withGraphFetched('commands')
-          .withGraphFetched('cronJobs')
-          .withGraphFetched('functions')
-          .withGraphFetched('permissions')
-          .withGraphFetched('hooks.function')
-          .withGraphFetched('cronJobs.function')
-          .withGraphFetched('commands.function')
-          .withGraphFetched('commands.arguments');
+        query.withGraphFetched(
+          '[hooks.function, commands.[function, arguments], cronJobs.function, functions, permissions]',
+        );
       },
     };
   }
@@ -162,16 +156,9 @@ export class ModuleInstallationModel extends TakaroModel {
     return {
       ...baseModifiers,
       // Loads a bunch of related data we always need for the DTO
+      // Using a single relation expression is more efficient than chaining multiple withGraphFetched calls
       standardExtend(query: Objection.QueryBuilder<Model>) {
-        query
-          .withGraphFetched('version')
-          .withGraphFetched('version.cronJobs')
-          .withGraphFetched('version.cronJobs.function')
-          .withGraphFetched('version.hooks')
-          .withGraphFetched('version.commands')
-          .withGraphFetched('version.permissions')
-          .withGraphFetched('version.functions')
-          .withGraphFetched('module');
+        query.withGraphFetched('[version.[cronJobs.function, hooks, commands, permissions, functions], module]');
       },
     };
   }
@@ -295,15 +282,15 @@ export class ModuleRepo extends ITakaroRepo<ModuleModel, ModuleOutputDTO, Module
     const versions = await queryVersion.whereIn('moduleId', moduleIds).orderByRaw(`
         "moduleId",
         CASE WHEN tag = 'latest' THEN 0 ELSE 1 END,
-        CASE 
+        CASE
           WHEN tag = 'latest' THEN '999999999.999999999.999999999'
           ELSE regexp_replace(tag, '^v', '')
         END::varchar ~ '^[0-9]+\.[0-9]+\.[0-9]+$' DESC,
         string_to_array(
-          CASE 
+          CASE
             WHEN tag = 'latest' THEN '999999999.999999999.999999999'
             ELSE regexp_replace(tag, '^v', '')
-          END, 
+          END,
           '.'
         )::int[] DESC NULLS LAST
       `);
@@ -328,6 +315,35 @@ export class ModuleRepo extends ITakaroRepo<ModuleModel, ModuleOutputDTO, Module
     });
 
     return versionsMap;
+  }
+
+  async getLatestVersionsForModules(moduleIds: string[]): Promise<Map<string, ModuleVersionOutputDTO>> {
+    if (moduleIds.length === 0) {
+      return new Map();
+    }
+
+    const { queryVersion } = await this.getModel();
+
+    // Fetch all 'latest' versions for the given module IDs with all related data
+    const versions = await queryVersion
+      .whereIn('moduleId', moduleIds)
+      .andWhere('tag', 'latest')
+      .modify('standardExtend');
+
+    // Map moduleId to its latest version
+    const latestVersionsMap = new Map<string, ModuleVersionOutputDTO>();
+
+    versions.forEach((version) => {
+      latestVersionsMap.set(
+        version.moduleId,
+        new ModuleVersionOutputDTO({
+          ...version,
+          systemConfigSchema: getSystemConfigSchema(version as unknown as ModuleVersionOutputDTO),
+        }),
+      );
+    });
+
+    return latestVersionsMap;
   }
 
   async create(item: ModuleCreateDTO): Promise<ModuleOutputDTO> {

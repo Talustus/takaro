@@ -63,9 +63,20 @@ export class ModuleService extends TakaroService<ModuleModel, ModuleOutputDTO, M
   private async extendModuleDTO(
     mod: ModuleOutputDTO,
     versionsMap?: Map<string, SmallModuleVersionOutputDTO[]>,
+    latestVersionsMap?: Map<string, ModuleVersionOutputDTO>,
   ): Promise<ModuleOutputDTO> {
-    const latestVersion = await this.getLatestVersion(mod.id);
-    mod.latestVersion = latestVersion;
+    // Use pre-fetched latest version or fetch individually
+    if (latestVersionsMap) {
+      const latestVersion = latestVersionsMap.get(mod.id);
+      if (latestVersion) {
+        mod.latestVersion = latestVersion;
+      } else {
+        // Module doesn't have a 'latest' version yet, create one
+        mod.latestVersion = await this.getLatestVersion(mod.id);
+      }
+    } else {
+      mod.latestVersion = await this.getLatestVersion(mod.id);
+    }
 
     // Include versions if provided (from bulk fetch) or fetch individually
     if (versionsMap) {
@@ -81,11 +92,16 @@ export class ModuleService extends TakaroService<ModuleModel, ModuleOutputDTO, M
   async find(filters: ITakaroQuery<ModuleOutputDTO>): Promise<PaginatedOutput<ModuleOutputDTO>> {
     const results = await this.repo.find(filters);
 
-    // Fetch versions for all modules in bulk
+    // Fetch versions and latest versions for all modules in bulk
     const moduleIds = results.results.map((m) => m.id);
-    const versionsMap = await this.repo.getVersionsForModules(moduleIds);
+    const [versionsMap, latestVersionsMap] = await Promise.all([
+      this.repo.getVersionsForModules(moduleIds),
+      this.repo.getLatestVersionsForModules(moduleIds),
+    ]);
 
-    const extendedResults = await Promise.all(results.results.map((m) => this.extendModuleDTO(m, versionsMap)));
+    const extendedResults = await Promise.all(
+      results.results.map((m) => this.extendModuleDTO(m, versionsMap, latestVersionsMap)),
+    );
 
     return {
       total: results.total,

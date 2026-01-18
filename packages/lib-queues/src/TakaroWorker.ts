@@ -56,7 +56,8 @@ export abstract class TakaroWorker<T> {
     // Handle Redis connection issues - exit to get clean restart
     // When Redis disconnects and reconnects, BullMQ workers can get stuck with
     // "ghost" active jobs where lock extension resumes but job processor promises
-    // remain stuck. Exiting allows Docker to restart with clean state.
+    // remain stuck.
+    // Workers without a Redis connection are useless anyways.
     this.bullWorker.on('ioredis:close', () => {
       this.log.error('Redis connection closed - exiting worker for clean restart', { worker: name });
       // Give time for logs to flush, then exit

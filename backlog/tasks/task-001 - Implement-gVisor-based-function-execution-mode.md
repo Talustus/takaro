@@ -4,7 +4,7 @@ title: Implement gVisor-based function execution mode
 status: To Do
 assignee: []
 created_date: '2026-01-20 20:50'
-updated_date: '2026-01-20 22:04'
+updated_date: '2026-01-20 22:15'
 labels:
   - security
   - infrastructure
@@ -16,49 +16,7 @@ priority: medium
 ## Description
 
 <!-- SECTION:DESCRIPTION:BEGIN -->
-Add a new `GVISOR` execution mode for Takaro functions as a self-hostable alternative to AWS Lambda.
-
-## Design Document
-See: `/home/catalysm/.claude/plans/sleepy-herding-wigderson.md`
-
-## Key Architecture Decisions
-- **Scaling**: Warm containers with round-robin load balancer (sync HTTP like Lambda)
-- **Network**: `--network=none` + Squid proxy via Unix socket for egress control
-- **Timeout**: Worker thread per execution with 2-minute hard limit
-- **gVisor**: Required - container runtime must be runsc
-
-## Security Layers
-1. Node.js vm.SourceTextModule (memory isolation per execution)
-2. Worker threads (timeout enforcement)
-3. cgroups (CPU/memory limits)
-4. gVisor Sentry (syscall interception)
-5. Container (`--network=none`, read-only fs)
-6. Squid proxy (domain allowlist)
-
-## Components to Build
-- `packages/app-function-runner` - HTTP service running in gVisor container
-- `executeGVisor.ts` executor in app-api
-- Squid proxy configuration
-- Docker/k8s deployment configs with runsc runtime
-<!-- SECTION:DESCRIPTION:END -->
-
-## Acceptance Criteria
-<!-- AC:BEGIN -->
-- [ ] #1 gVisor execution mode works as alternative to Lambda
-- [ ] #2 Network egress controlled via --network=none + Squid proxy
-- [ ] #3 Worker thread timeout enforcement (2 min hard limit)
-- [ ] #4 Horizontal scaling via load-balanced replicas
-- [ ] #5 cgroups enforce CPU/memory limits
-- [ ] #6 Read-only filesystem prevents persistence
-- [ ] #7 Integration tests pass for commands, hooks, and cronjobs
-<!-- AC:END -->
-
-## Implementation Plan
-
-<!-- SECTION:PLAN:BEGIN -->
-# Design: gVisor-Based Function Execution for Takaro
-
-## 1. Problem Statement
+## Problem Statement
 
 Takaro needs a self-hostable alternative to AWS Lambda for executing user-defined JavaScript functions (modules). These functions are:
 - **Multi-tenant**: Different customers run code on shared infrastructure
@@ -69,40 +27,56 @@ Current options:
 - **LOCAL mode**: Node.js `vm` module - fast but insecure (shared process, kernel exploits possible)
 - **LAMBDA mode**: AWS Lambda - secure but not self-hostable, vendor lock-in
 
-We need a third option that provides Lambda-like security while being self-hosted.
+## Solution
 
-## 2. Technology Landscape
+Add a new `GVISOR` execution mode that provides Lambda-like security while being self-hosted, using gVisor's application kernel for syscall interception and container isolation.
 
-### Isolation Technologies Compared
+## Why gVisor?
 
-| Technology | Isolation Level | Startup Time | Memory Overhead | Use Case |
-|------------|-----------------|--------------|-----------------|----------|
-| **Node.js vm** | Process (weak) | ~1ms | ~0 | Dev only |
-| **V8 Isolates** | Runtime (medium) | ~5ms | ~2MB | Edge functions, Cloudflare Workers |
-| **gVisor** | Application kernel (strong) | 50-100ms | ~15MB | Multi-tenant containers |
-| **Firecracker** | Hardware VM (strongest) | 125ms+ | ~5MB | AWS Lambda, extreme isolation |
+| Technology | Isolation Level | Startup Time | Memory Overhead |
+|------------|-----------------|--------------|-----------------|
+| Node.js vm | Process (weak) | ~1ms | ~0 |
+| V8 Isolates | Runtime (medium) | ~5ms | ~2MB |
+| **gVisor** | Application kernel (strong) | 50-100ms | ~15MB |
+| Firecracker | Hardware VM (strongest) | 125ms+ | ~5MB |
 
-**Why gVisor over Firecracker?**
-- Firecracker requires KVM (hardware virtualization), not available in most cloud VMs or containers
-- gVisor works anywhere Linux runs - VMs, bare metal, even nested containers
-- gVisor is what Google Cloud Run uses for multi-tenant sandboxing
+- Firecracker requires KVM - not available in most cloud VMs
+- gVisor works anywhere Linux runs
+- Google Cloud Run uses gVisor for multi-tenant sandboxing
+- Keeps existing `vm.SourceTextModule` approach unchanged
 
-**Why gVisor over V8 Isolates?**
-- V8 Isolates require transpiling/bundling user code
-- gVisor lets us keep the existing `vm.SourceTextModule` approach unchanged
-- gVisor provides filesystem and network isolation at kernel level, not just memory
+## Components to Build
 
-## 3. Security Model
+- `packages/app-function-runner` - HTTP service running in gVisor container
+- `executeGVisor.ts` executor in app-api
+- Squid proxy configuration for network egress control
+- Docker/k8s deployment configs with runsc runtime
+<!-- SECTION:DESCRIPTION:END -->
 
-### What gVisor Protects Against
+## Acceptance Criteria
+<!-- AC:BEGIN -->
+- [ ] #1 New GVISOR value added to EXECUTION_MODE enum in lib-config
+- [ ] #2 packages/app-function-runner HTTP service created with worker thread pool
+- [ ] #3 executeGVisor.ts executor calls function-runner via HTTP
+- [ ] #4 Container runs with gVisor runtime (runsc) - fails if not available
+- [ ] #5 Container runs with --network=none flag
+- [ ] #6 Squid proxy container with Unix socket mount for egress control
+- [ ] #7 Global domain allowlist enforced by Squid proxy
 
-gVisor intercepts all system calls from the container and re-implements them in a userspace "Sentry" process written in Go:
+- [ ] #8 Worker thread timeout enforcement at 2 minutes
+- [ ] #9 cgroups enforce CPU (0.5) and memory (256M) limits
+- [ ] #10 Read-only root filesystem prevents persistence
+- [ ] #11 Fresh vm.SourceTextModule context per execution
+- [ ] #12 Horizontal scaling via load balancer across replicas
+- [ ] #13 Integration tests pass for commands hooks and cronjobs via gVisor mode
+- [ ] #14 Metrics exposed: execution count latency errors timeouts
+- [ ] #15 Feature flag to enable gVisor mode per domain for gradual rollout
+<!-- AC:END -->
 
-1. **Kernel exploit mitigation**: Application never touches the real Linux kernel
-2. **Container escape prevention**: Even if application breaks out of Node.js vm, it's still trapped in gVisor
-3. **Syscall filtering**: gVisor only implements ~350 of Linux's ~400+ syscalls
+## Implementation Plan
 
-### Multi-Layer Defense
+<!-- SECTION:PLAN:BEGIN -->
+## Security Model: Multi-Layer Defense
 
 ```
 User Function Code (JavaScript)
@@ -118,14 +92,19 @@ Container Runtime (runsc)            ← Read-only fs, --network=none
 Host Kernel                          ← Protected from direct access
 ```
 
+### What gVisor Protects Against
+1. **Kernel exploit mitigation**: App never touches real Linux kernel
+2. **Container escape prevention**: Trapped in gVisor even if vm escape
+3. **Syscall filtering**: Only ~350 of ~400+ syscalls implemented
+
 ### What This Does NOT Protect Against
 - Side-channel attacks (Spectre/Meltdown)
 - Bugs in gVisor itself
 - Resource exhaustion (without cgroups)
 
-## 4. Scaling Model
+---
 
-### Architecture: Warm Containers with Round-Robin Load Balancing
+## Scaling Model: Warm Containers + Load Balancer
 
 ```
          Load Balancer (round-robin)
@@ -137,42 +116,34 @@ function-runner  function-runner  function-runner
   Workers          Workers          Workers
 ```
 
-This matches how AWS Lambda works: Takaro API makes a synchronous HTTP request to the function-runner, which blocks until the function completes (up to 2 minutes).
+Matches AWS Lambda pattern: sync HTTP request blocks until complete (up to 2 min).
 
-**Safeguards:**
-- Read-only filesystem
-- Worker thread per execution (timeout + parallelism)
-- Network isolation via `--network=none` + proxy
-
-**Scaling:**
+**Scaling triggers:**
 - Add replicas when CPU > 70%
 - Each replica: ~256MB memory, 0.5 CPU, ~4 concurrent executions
 
-## 5. Resource Limits & Timeout Enforcement
+---
 
-### Enforcement Layers
+## Resource Limits & Enforcement
 
-| Resource | Enforcement Mechanism | Where |
-|----------|----------------------|-------|
+| Resource | Mechanism | Where |
+|----------|-----------|-------|
 | CPU time | cgroups cpu.max | Container runtime |
 | Memory | cgroups memory.max | Container runtime |
 | Execution time | Worker thread termination | Application code |
-| Network egress | --network=none + Squid proxy | Container + Host |
+| Network egress | --network=none + Squid | Container + Host |
 | Disk writes | Read-only filesystem | Container runtime |
 | Process spawning | gVisor syscall filter | gVisor Sentry |
 
-### Worker Thread per Execution with 2-Minute Hard Limit
+### Worker Thread per Execution
+- 2-minute hard timeout
+- Parent thread terminates worker if exceeded
+- Parallelism via thread pool (4-8 workers)
+- Worker crash doesn't bring down main process
 
-Each function execution runs in a dedicated worker thread:
-1. Timeout enforcement - parent can terminate worker
-2. Parallelism - multiple executions concurrently
-3. Isolation - worker crash doesn't bring down main process
+---
 
-## 6. Network Egress Control
-
-### Decision: Container-Level Network Isolation with Proxy
-
-Run gVisor container with `--network=none` and route all HTTP through Squid proxy via Unix socket.
+## Network Egress: Container Isolation + Proxy
 
 ```
 Squid Proxy ←── Unix socket ──→ function-runner (--network=none)
@@ -181,24 +152,41 @@ Squid Proxy ←── Unix socket ──→ function-runner (--network=none)
 Internet (only allowed destinations)
 ```
 
-**Why this is secure:**
-1. `--network=none` - Container has NO network stack
-2. Unix socket - ONLY way to reach outside is through proxy
-3. Squid proxy enforces allowlist
-4. Defense in depth - even if Node.js compromised, no network
+**Why secure:**
+1. `--network=none` - NO network stack in container
+2. Unix socket - ONLY path to outside world
+3. Squid enforces domain allowlist
+4. Defense in depth - no network even if Node.js compromised
 
-**Proxy allowlist (Squid):**
-```
-acl allowed_hosts dstdomain .takaro.io
-acl allowed_hosts dstdomain discord.com
-acl allowed_hosts dstdomain hooks.slack.com
-http_access allow allowed_hosts
-http_access deny all
-```
+**Same pattern Claude Code on web uses.**
+<!-- SECTION:PLAN:END -->
 
-## 7. Operational Considerations
+## Implementation Notes
 
-### Docker Compose
+<!-- SECTION:NOTES:BEGIN -->
+## Decisions Made
+
+| Question | Decision |
+|----------|----------|
+| Scaling model | Warm containers + round-robin load balancer |
+| Network egress | --network=none + Squid proxy with global allowlist |
+| Timeout | Hard limit of 2 minutes via worker thread termination |
+| Concurrency | Worker thread per execution within each container |
+| gVisor requirement | Required - fail if runsc not available |
+
+---
+
+## Remaining Questions
+
+1. **Worker thread pool size**: Recommend 4-8 based on CPU allocation
+2. **Squid proxy setup**: Separate container or sidecar? (recommend separate)
+3. **Failure handling**: Container crash recovery via restart policy
+4. **Gradual rollout**: Feature flag per domain to test alongside Lambda
+
+---
+
+## Deployment: Docker Compose
+
 ```yaml
 function-runner:
   runtime: runsc
@@ -211,34 +199,55 @@ function-runner:
         memory: 256M
 ```
 
-### gVisor Installation
+## Deployment: Kubernetes
+
+```yaml
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: gvisor
+handler: runsc
+```
+
+---
+
+## gVisor Installation (Debian/Ubuntu)
+
 ```bash
 curl -fsSL https://gvisor.dev/archive.key | sudo gpg --dearmor -o /usr/share/keyrings/gvisor-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/gvisor-archive-keyring.gpg] https://storage.googleapis.com/gvisor/releases release main" | sudo tee /etc/apt/sources.list.d/gvisor.list
 sudo apt-get update && sudo apt-get install -y runsc
 ```
 
-## 8. Decisions Made
+Configure Docker:
+```json
+{
+  "runtimes": {
+    "runsc": { "path": "/usr/bin/runsc" }
+  }
+}
+```
 
-| Question | Decision |
-|----------|----------|
-| Scaling model | Warm containers + round-robin load balancer |
-| Network egress | --network=none + Squid proxy with global allowlist |
-| Timeout | Hard limit of 2 minutes via worker thread termination |
-| Concurrency | Worker thread per execution |
-| gVisor requirement | Required - fail if runsc not available |
+---
 
-## 9. Remaining Questions
+## Squid Proxy Allowlist
 
-1. Worker thread pool size (recommend 4-8)
-2. Squid proxy setup - separate container or sidecar
-3. Failure handling - container crash recovery
-4. Gradual rollout - feature flag per domain
+```
+acl allowed_hosts dstdomain .takaro.io
+acl allowed_hosts dstdomain discord.com
+acl allowed_hosts dstdomain .discord.com
+acl allowed_hosts dstdomain hooks.slack.com
 
-## 10. Sources
+http_access allow allowed_hosts
+http_access deny all
+```
+
+---
+
+## Sources
 
 - https://gvisor.dev/docs/architecture_guide/security/
 - https://awsfundamentals.com/blog/sandboxing-with-aws-lambda
 - https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html
 - https://cloud.google.com/kubernetes-engine/docs/how-to/sandbox-pods
-<!-- SECTION:PLAN:END -->
+<!-- SECTION:NOTES:END -->

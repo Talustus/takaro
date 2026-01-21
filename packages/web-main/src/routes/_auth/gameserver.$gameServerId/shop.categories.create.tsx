@@ -21,7 +21,7 @@ export const Route = createFileRoute('/_auth/gameserver/$gameServerId/shop/categ
 
 function Component() {
   const { gameServerId } = Route.useParams();
-  const { mutate: createCategory, isSuccess, isPending } = useShopCategoryCreate();
+  const { mutate: createCategory, isSuccess, isPending, error } = useShopCategoryCreate();
   const navigate = Route.useNavigate();
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
@@ -39,5 +39,5 @@ function Component() {
     });
   }
 
-  return <CategoryForm gameServerId={gameServerId} onSubmit={onSubmit} isPending={isPending} />;
+  return <CategoryForm gameServerId={gameServerId} onSubmit={onSubmit} isPending={isPending} error={error} />;
 }

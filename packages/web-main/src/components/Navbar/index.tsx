@@ -173,7 +173,7 @@ export const Navbar: FC<NavbarProps> = ({ showGameServerNav }) => {
           top: '50%',
           right: 0,
           transform: 'translate(50%, -50%)',
-          zIndex: 10,
+          zIndex: 1,
           backgroundColor: theme.colors.backgroundAlt,
         }}
       >

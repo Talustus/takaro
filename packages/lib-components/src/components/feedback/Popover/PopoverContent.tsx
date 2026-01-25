@@ -22,7 +22,9 @@ export const PopoverContent = forwardRef<HTMLDivElement, HTMLProps<HTMLDivElemen
 
   return (
     <FloatingPortal>
-      <FloatingFocusManager context={floatingContext} modal={context.modal}>
+      {/* initialFocus={-1} prevents auto-focusing an element when the popover opens,
+            which can cause the popover to close immediately in some contexts. */}
+      <FloatingFocusManager context={floatingContext} modal={context.modal} initialFocus={-1}>
         <Container
           ref={ref}
           style={{ ...context.floatingStyles, ...style }}

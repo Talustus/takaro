@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { ItemSelectQueryView, ItemSelectQueryViewProps } from '.';
 import { z } from 'zod';
 import { Button } from '@takaro/lib-components';

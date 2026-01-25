@@ -1,6 +1,10 @@
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import React, { useMemo, useState } from 'react';
-import { Button, SelectField, SelectFieldProps } from '../../../../components';
+import {
+  ControlledSelectField as SelectField,
+  type ControlledSelectFieldProps as SelectFieldProps,
+} from './Controlled';
+import { Button } from '../../../actions/Button';
 import { SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { styled } from '../../../../styled';
 import { films } from '../data';

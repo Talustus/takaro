@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Alert, FileField, FileFieldProps } from '../../../components';
+import { ControlledFileField as FileField, ControlledFileFieldProps as FileFieldProps } from './Controlled';
+import { Alert } from '../../feedback/Alert';
 import { styled } from '../../../styled';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -32,7 +33,7 @@ export const OnSubmit: StoryFn<FileFieldProps> = (args) => {
     profileImage: FileList;
   };
 
-  const MAX_FILE_SIZE = 500000; // 5MB
+  const MAX_FILE_SIZE = 5_000_000;
   const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
   const [value, setValue] = useState<string | null>(null);
 
@@ -56,9 +57,10 @@ export const OnSubmit: StoryFn<FileFieldProps> = (args) => {
 
   return (
     <>
-      <Alert variant="warning">
-        Although the upload could be limited to a single file, the returned type will always be a FileList.
-      </Alert>
+      <Alert
+        variant="warning"
+        title="Although the upload could be limited to a single file, the returned type will always be a FileList."
+      />
       <form onSubmit={handleSubmit(onSubmit)}>
         <FileField
           name="profileImage"
@@ -166,7 +168,7 @@ export const JsonValidationExample: StoryFn<FileFieldProps> = (args) => {
     configFile: FileList;
   };
 
-  const MAX_FILE_SIZE = 500000; // 5MB
+  const MAX_FILE_SIZE = 5_000_000; // 5MB
   const ACCEPTED_IMAGE_TYPES = ['application/json'];
   const [file, setFile] = useState<File | null>(null);
 

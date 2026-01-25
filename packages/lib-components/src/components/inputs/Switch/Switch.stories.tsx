@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { styled } from '../../../styled';
 import { Switch, SwitchProps, Button } from '../../../components';
 import { useForm, SubmitHandler, useWatch } from 'react-hook-form';

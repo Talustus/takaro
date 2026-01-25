@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { styled } from '../../../styled';
 import { Avatar, AvatarGroupProps, AvatarProps } from '.';
 import { getInitials } from '../../../helpers';

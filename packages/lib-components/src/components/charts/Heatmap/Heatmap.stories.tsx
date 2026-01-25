@@ -1,6 +1,6 @@
 import React from 'react';
 import { HeatMap, HeatmapProps } from '.';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { styled } from '../../../styled';
 
 export default {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { IconButton } from '../../../components';
 import { Dropdown } from '.';
 import { DropdownMenu } from './DropdownMenu';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { styled } from '../../../styled';
 import { Action } from '../../../components';
 import { DropdownButton, DropdownButtonProps } from '.';

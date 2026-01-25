@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { Tooltip, IconButton, IconButtonProps } from '../../../components';
 import { styled } from '../../../styled';
 import { AiOutlineBell as Icon } from 'react-icons/ai';

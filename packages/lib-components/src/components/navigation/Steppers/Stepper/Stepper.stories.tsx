@@ -1,8 +1,9 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { styled } from '../../../../styled';
 import { useStepper } from '../useStepper';
-import { Button, Stepper } from '../../../../components';
+import { Stepper } from '../Stepper';
+import { Button } from '../../../actions/Button';
 import { AiFillSafetyCertificate as Safety, AiFillBell as Bell } from 'react-icons/ai';
 import { MdLocalShipping as Shipping } from 'react-icons/md';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { GameServerSelectView as GameServerSelectQueryView, GameServerSelectQueryViewProps } from '.';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { GameServerOutputDTO, GameServerOutputDTOTypeEnum } from '@takaro/apiclient';

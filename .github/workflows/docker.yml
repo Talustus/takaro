@@ -101,6 +101,7 @@ jobs:
         env:
           SOURCE_DATE_EPOCH: ${{ env.TIMESTAMP }}
   node-ci:
+    name: node-ci (24, ${{ matrix.shard }})
     needs: [docker]
     timeout-minutes: 60
     runs-on: ubuntu-24.04
@@ -110,7 +111,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [24]
+        node-version: [24.11.0]
         shard: [1, 2, 3, 4]
 
     steps:
@@ -219,14 +220,14 @@ jobs:
       - name: Download all test artifacts
         uses: actions/download-artifact@v5
         with:
-          pattern: 'integrationTests-*'
+          pattern: "integrationTests-*"
           path: reports
           merge-multiple: true
 
       - name: Download E2E artifacts
         uses: actions/download-artifact@v5
         with:
-          pattern: 'e2e-*'
+          pattern: "e2e-*"
           path: reports
           merge-multiple: true
 
@@ -237,4 +238,3 @@ jobs:
           check_name: "Test Results"
           comment_title: "Test Results"
           github_token: ${{ steps.generate_token.outputs.token }}
-

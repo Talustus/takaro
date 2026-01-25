@@ -43,7 +43,6 @@ export const GenericFileField = forwardRef<HTMLInputElement, GenericFileFieldPro
       hasDescription,
     } = defaultsApplier(props);
 
-    value as unknown as FileList;
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleClear = useCallback(() => {

@@ -2,7 +2,6 @@ import { DrawerSkeleton } from '@takaro/lib-components';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { variableQueryOptions } from '../../../queries/variable';
 import { VariablesForm } from '../../../components/variables/VariablesForm';
-import { queryClient } from '../../../queryClient';
 import { hasPermission } from '../../../hooks/useHasPermission';
 import { userMeQueryOptions } from '../../../queries/user';
 import { useQuery } from '@tanstack/react-query';
@@ -14,7 +13,7 @@ export const Route = createFileRoute('/_auth/_global/variables/view/$variableId'
       throw redirect({ to: '/forbidden' });
     }
   },
-  loader: ({ params }) => queryClient.ensureQueryData(variableQueryOptions(params.variableId)),
+  loader: ({ params, context }) => context.queryClient.ensureQueryData(variableQueryOptions(params.variableId)),
   component: Component,
   pendingComponent: DrawerSkeleton,
 });

@@ -20,13 +20,9 @@ export const Route = createFileRoute('/_auth/_global/roles/create')({
 });
 
 function Component() {
-  const { mutate, isPending: isCreatingRole, error, isSuccess } = useRoleCreate();
+  const { mutate, isPending: isCreatingRole, error } = useRoleCreate();
   const permissions = Route.useLoaderData();
   const navigate = Route.useNavigate();
-
-  if (isSuccess) {
-    navigate({ to: '/roles' });
-  }
 
   const onSubmit: SubmitHandler<IFormInputs> = ({ name, permissions: formPermissions, linkedDiscordRoleId }) => {
     const activePermissions = Object.entries(formPermissions)
@@ -46,7 +42,7 @@ function Component() {
       roleData.linkedDiscordRoleId = linkedDiscordRoleId;
     }
 
-    mutate(roleData);
+    mutate(roleData, { onSuccess: () => navigate({ to: '/roles' }) });
   };
 
   return <RoleForm onSubmit={onSubmit} isLoading={isCreatingRole} permissions={permissions} error={error} />;

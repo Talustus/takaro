@@ -64,7 +64,7 @@ function Component() {
   const [{ data: player }, { data: pogs }] = useQueries({
     queries: [
       { ...playerQueryOptions(playerId), initialData: loaderData.player },
-      { ...playersOnGameServersQueryOptions(), initialData: loaderData.pogs },
+      { ...playersOnGameServersQueryOptions({ filters: { playerId: [playerId] } }), initialData: loaderData.pogs },
     ],
   });
 

@@ -9,12 +9,11 @@ interface PlayerDeleteDialogProps extends RequiredDialogOptions {
 }
 
 export const PlayerDeleteDialog: FC<PlayerDeleteDialogProps> = ({ playerId, playerName, ...dialogOptions }) => {
-  const { mutateAsync, isPending: isDeleting, error } = usePlayerRemove();
+  const { mutate, isPending: isDeleting, error } = usePlayerRemove();
 
-  const handleOnDelete = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleOnDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    await mutateAsync({ playerId });
-    dialogOptions.onOpenChange(false);
+    mutate({ playerId }, { onSuccess: () => dialogOptions.onOpenChange(false) });
   };
 
   return (

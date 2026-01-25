@@ -11,20 +11,17 @@ interface GameServerDeleteDialogProps extends RequiredDialogOptions {
 export const GameServerDeleteDialog = forwardRef<DeleteImperativeHandle, GameServerDeleteDialogProps>(
   function GameServerDeleteDialog({ gameServerId, gameServerName, ...dialogOptions }, ref) {
     const [valid, setValid] = useState<boolean>(false);
-    const { mutate, isPending: isDeleting, isSuccess, error } = useGameServerRemove();
+    const { mutate, isPending: isDeleting, error } = useGameServerRemove();
+    const onSuccessGameServerRemove = () => dialogOptions.onOpenChange(false);
 
     useImperativeHandle(ref, () => ({
-      triggerDelete: () => mutate({ gameServerId }),
+      triggerDelete: () => mutate({ gameServerId }, { onSuccess: onSuccessGameServerRemove }),
     }));
 
     const handleOnDelete = (e: MouseEvent) => {
       e.stopPropagation();
-      mutate({ gameServerId });
+      mutate({ gameServerId }, { onSuccess: onSuccessGameServerRemove });
     };
-
-    if (isSuccess) {
-      dialogOptions.onOpenChange(false);
-    }
 
     return (
       <Dialog {...dialogOptions}>

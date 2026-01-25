@@ -9,12 +9,11 @@ interface VariableDeleteProps extends RequiredDialogOptions {
 }
 
 export const UserDeleteDialog: FC<VariableDeleteProps> = ({ userId, userName, ...dialogOptions }) => {
-  const { mutateAsync, isPending: isDeleting, error } = useUserRemove();
+  const { mutate, isPending: isDeleting, error } = useUserRemove();
 
-  const handleOnDelete = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleOnDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    await mutateAsync({ userId });
-    dialogOptions.onOpenChange(false);
+    mutate({ userId }, { onSuccess: () => dialogOptions.onOpenChange(false) });
   };
 
   return (

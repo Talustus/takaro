@@ -7,7 +7,7 @@ import { AiOutlineArrowRight as ArrowRightIcon } from 'react-icons/ai';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TAKARO_DOMAIN_COOKIE_REGEX } from '../../util/domainCookieRegex';
 import { getLastUsedDomainId, setLastUsedDomainId } from '../../util/lastUsedDomain';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 const Container = styled.div`
   padding: ${({ theme }) => theme.spacing[4]};
@@ -74,19 +74,23 @@ function Component() {
   }, [lastUsedDomainId, currentDomain, me.domains, mutate, navigate, queryClient]);
 
   // Sort domains: current domain first, then last used domain, then others
-  me.domains.sort((a, b) => {
-    if (a.id === currentDomain) return -1;
-    if (b.id === currentDomain) return 1;
-    if (a.id === lastUsedDomainId) return -1;
-    if (b.id === lastUsedDomainId) return 1;
-    return 0;
-  });
+  const sortedDomains = useMemo(
+    () =>
+      [...me.domains].sort((a, b) => {
+        if (a.id === currentDomain) return -1;
+        if (b.id === currentDomain) return 1;
+        if (a.id === lastUsedDomainId) return -1;
+        if (b.id === lastUsedDomainId) return 1;
+        return 0;
+      }),
+    [me.domains, currentDomain, lastUsedDomainId],
+  );
 
   return (
     <Container>
       <Company />
       <DomainCardList>
-        {me.domains.map((domain) => (
+        {sortedDomains.map((domain) => (
           <DomainCard key={domain.id} domain={domain} isCurrentDomain={currentDomain === domain.id} />
         ))}
       </DomainCardList>
@@ -101,7 +105,7 @@ interface DomainCardProps {
 
 function DomainCard({ domain, isCurrentDomain }: DomainCardProps) {
   const navigate = useNavigate();
-  const { mutate, isSuccess } = useUserSetSelectedDomain();
+  const { mutate } = useUserSetSelectedDomain();
   const queryClient = useQueryClient();
   const isDisabled = domain.state === DomainOutputDTOStateEnum.Disabled;
 
@@ -112,16 +116,19 @@ function DomainCard({ domain, isCurrentDomain }: DomainCardProps) {
     if (isCurrentDomain === false) {
       // Save as last used domain when selecting
       setLastUsedDomainId(domain.id);
-      mutate({ domainId: domain.id });
+      mutate(
+        { domainId: domain.id },
+        {
+          onSuccess: () => {
+            queryClient.clear();
+            navigate({ to: '/' });
+          },
+        },
+      );
     } else {
       navigate({ to: '/' });
     }
   };
-
-  if (isSuccess) {
-    queryClient.clear();
-    navigate({ to: '/' });
-  }
 
   function getDomainChip() {
     switch (domain.state) {

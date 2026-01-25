@@ -26,26 +26,28 @@ function Component() {
   const { categoryId, gameServerId } = Route.useParams();
 
   const category = Route.useLoaderData();
-  const { mutate: updateCategory, isSuccess, isPending, error } = useShopCategoryUpdate();
+  const { mutate: updateCategory, isPending, error } = useShopCategoryUpdate();
   const navigate = Route.useNavigate();
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    updateCategory({
-      shopCategoryId: categoryId,
-      shopCategoryDetails: {
-        name: data.name,
-        emoji: data.emoji,
-        parentId: data.parentId ?? undefined,
+  const onSubmit: SubmitHandler<FormFields> = (data) => {
+    updateCategory(
+      {
+        shopCategoryId: categoryId,
+        shopCategoryDetails: {
+          name: data.name,
+          emoji: data.emoji,
+          parentId: data.parentId ?? undefined,
+        },
       },
-    });
+      {
+        onSuccess: () =>
+          navigate({
+            to: '/gameserver/$gameServerId/shop/categories',
+            params: { gameServerId },
+          }),
+      },
+    );
   };
-
-  if (isSuccess) {
-    navigate({
-      to: '/gameserver/$gameServerId/shop/categories',
-      params: { gameServerId },
-    });
-  }
 
   return (
     <CategoryForm

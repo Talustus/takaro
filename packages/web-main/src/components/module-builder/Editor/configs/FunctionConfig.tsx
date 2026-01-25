@@ -35,7 +35,7 @@ interface FunctionConfigFormProps {
 }
 
 export const FunctionConfigForm: FC<FunctionConfigFormProps> = ({ fn, readOnly = false, moduleId, versionId }) => {
-  const { mutateAsync, isPending } = useFunctionUpdate();
+  const { mutate, isPending } = useFunctionUpdate();
 
   const { control, handleSubmit, formState } = useForm<FormInputs>({
     mode: 'onSubmit',
@@ -45,8 +45,8 @@ export const FunctionConfigForm: FC<FunctionConfigFormProps> = ({ fn, readOnly =
     },
   });
 
-  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    await mutateAsync({
+  const onSubmit: SubmitHandler<FormInputs> = (data) => {
+    mutate({
       functionId: fn.id,
       fn: data,
       moduleId,

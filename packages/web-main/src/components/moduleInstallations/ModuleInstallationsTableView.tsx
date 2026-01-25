@@ -1,41 +1,25 @@
 import { FC, useState, useEffect } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
-import { Table, useTableActions, styled, IconButton, Dropdown, Chip } from '@takaro/lib-components';
+import { Table, useTableActions, styled, IconButton, Chip, Button, Tooltip } from '@takaro/lib-components';
 import { ModuleOutputDTO, ModuleInstallationOutputDTO } from '@takaro/apiclient';
-import {
-  AiOutlineSetting as ConfigIcon,
-  AiOutlineEye as ViewConfigIcon,
-  AiOutlineReload as UpdateIcon,
-  AiOutlineCopy as CopyIcon,
-  AiOutlineDelete as UninstallIcon,
-  AiOutlineMore as ActionsIcon,
-  AiOutlinePlus as InstallIcon,
-  AiOutlineCheck,
-  AiOutlineClose,
-} from 'react-icons/ai';
+import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
-import { getApiClient } from '../../util/getApiClient';
 import { useHasPermission } from '../../hooks/useHasPermission';
 import { ModuleUninstallDialog } from '../../components/dialogs/ModuleUninstallDialog';
 import { useSnackbar } from 'notistack';
-import { moduleInstallationsOptions } from '../../queries/gameserver';
+import { moduleInstallationsOptions, useGameServerModuleInstall } from '../../queries/gameserver';
 import { modulesQueryOptions } from '../../queries/module';
 import { UncontrolledModuleVersionSelectQueryField } from '../../components/selects';
 import { getNewestVersionExcludingLatestTag } from '../../util/ModuleVersionHelpers';
-
-const ActionsContainer = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing[0.5]};
-  align-items: center;
-  justify-content: flex-end;
-`;
+import { ModuleInstallationActions } from './ModuleInstallationActions';
 
 const InstallContainer = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing[1]};
   align-items: center;
   justify-content: flex-end;
+  padding-right: ${({ theme }) => theme.spacing[1]};
 `;
 
 type ModuleInstallationsTableViewProps = Record<string, never>;
@@ -48,14 +32,13 @@ export const ModuleInstallationsTableView: FC<ModuleInstallationsTableViewProps>
   const navigate = useNavigate();
   const { gameServerId } = useParams({ from: '/_auth/gameserver/$gameServerId/modules' });
   const { enqueueSnackbar } = useSnackbar();
-  const queryClient = useQueryClient();
+  const { mutate: installModule } = useGameServerModuleInstall();
   const [quickSearchInput, setQuickSearchInput] = useState<string>('');
   const [openUninstallDialog, setOpenUninstallDialog] = useState<{ installation: ModuleInstallationOutputDTO } | null>(
     null,
   );
   const [selectedVersions, setSelectedVersions] = useState<{ [moduleId: string]: string }>({});
   const canManageGameServers = useHasPermission(['MANAGE_GAMESERVERS']);
-  const canReadGameServers = useHasPermission(['READ_MODULES']);
 
   // Query for all modules
   const { data: modulesData, isPending: modulesPending } = useQuery(modulesQueryOptions());
@@ -112,25 +95,21 @@ export const ModuleInstallationsTableView: FC<ModuleInstallationsTableViewProps>
     });
   };
 
-  const handleToggleEnabled = async (installation: ModuleInstallationOutputDTO) => {
+  const handleToggleEnabled = (installation: ModuleInstallationOutputDTO) => {
     const systemConfig = { ...installation.systemConfig } as any;
     systemConfig.enabled = !(systemConfig.enabled || false);
 
-    try {
-      await getApiClient().module.moduleInstallationsControllerInstallModule({
+    installModule(
+      {
         gameServerId,
         versionId: installation.versionId,
         systemConfig: JSON.stringify(systemConfig),
         userConfig: JSON.stringify(installation.userConfig),
-      });
-      enqueueSnackbar(`Module ${systemConfig.enabled ? 'enabled' : 'disabled'} successfully`, {
-        variant: 'default',
-        type: 'success',
-      });
-      queryClient.invalidateQueries();
-    } catch (error: any) {
-      enqueueSnackbar(`Failed to toggle module: ${error.message}`, { variant: 'default', type: 'error' });
-    }
+      },
+      {
+        onError: (_) => enqueueSnackbar('Failed to enable/disable module', { variant: 'default', type: 'error' }),
+      },
+    );
   };
 
   const columnHelper = createColumnHelper<CombinedModule>();
@@ -164,9 +143,9 @@ export const ModuleInstallationsTableView: FC<ModuleInstallationsTableViewProps>
       cell: ({ row }) => {
         const module = row.original;
         return module.installation ? (
-          <Chip color="success" label="Installed" />
+          <Chip color="primary" label="Installed" />
         ) : (
-          <Chip color="error" label="Not Installed" />
+          <Chip color="backgroundAccent" label="Not Installed" />
         );
       },
       enableColumnFilter: true,
@@ -175,7 +154,19 @@ export const ModuleInstallationsTableView: FC<ModuleInstallationsTableViewProps>
     columnHelper.display({
       header: 'Author',
       id: 'author',
-      cell: ({ row }) => row.original.author || 'Unknown',
+      cell: ({ row }) => {
+        const author = row.original.author || 'Unknown';
+        return author === 'Takaro' ? (
+          <Tooltip>
+            <Tooltip.Trigger asChild>
+              <Chip color="primary" label="Official" />
+            </Tooltip.Trigger>
+            <Tooltip.Content>This module is developed and maintained by the Takaro team.</Tooltip.Content>
+          </Tooltip>
+        ) : (
+          <span>{author}</span>
+        );
+      },
       enableColumnFilter: false,
       enableSorting: false,
     }),
@@ -196,12 +187,19 @@ export const ModuleInstallationsTableView: FC<ModuleInstallationsTableViewProps>
         const module = row.original;
         if (!module.installation) return null;
         return (
-          <IconButton
-            icon={(module.installation.systemConfig as any)?.enabled ? <AiOutlineCheck /> : <AiOutlineClose />}
-            onClick={() => handleToggleEnabled(module.installation!)}
-            disabled={!canManageGameServers}
-            ariaLabel="Toggle module"
-          />
+          <Tooltip>
+            <Tooltip.Trigger>
+              <IconButton
+                icon={(module.installation.systemConfig as any)?.enabled ? <AiOutlineCheck /> : <AiOutlineClose />}
+                onClick={() => handleToggleEnabled(module.installation!)}
+                disabled={!canManageGameServers}
+                ariaLabel="Toggle module enable/disable status"
+              />
+            </Tooltip.Trigger>
+            <Tooltip.Content>
+              {(module.installation.systemConfig as any)?.enabled ? 'Disable module' : 'Enable module'}
+            </Tooltip.Content>
+          </Tooltip>
         );
       },
       enableColumnFilter: false,
@@ -243,116 +241,25 @@ export const ModuleInstallationsTableView: FC<ModuleInstallationsTableViewProps>
       enableColumnFilter: false,
       enableHiding: false,
       cell: ({ row }) => {
-        const module = row.original;
-
-        // For not installed modules, show version selector and install button
-        if (!module.installation) {
-          return (
-            <InstallContainer>
-              <UncontrolledModuleVersionSelectQueryField
-                value={selectedVersions[module.id] || ''}
-                onChange={(value) => setSelectedVersions((prev) => ({ ...prev, [module.id]: value as string }))}
-                moduleId={module.id}
-                name={`version-select-${module.id}`}
-              />
-              <IconButton
-                icon={<InstallIcon />}
-                ariaLabel="Install module"
-                onClick={() => handleInstall(module.id)}
-                disabled={!selectedVersions[module.id] || !canManageGameServers}
-              />
-            </InstallContainer>
-          );
-        }
-
-        // For installed modules, show action dropdown
-        const menuItems: any[] = [];
-
-        if (canReadGameServers) {
-          menuItems.push({
-            label: 'View module configuration',
-            icon: <ViewConfigIcon />,
-            onClick: () => {
-              navigate({
-                to: '/gameserver/$gameServerId/modules/$moduleId/$moduleVersionTag/install/view',
-                params: {
-                  gameServerId,
-                  moduleId: module.id,
-                  moduleVersionTag: module.installation!.version?.tag || '',
-                },
-              });
-            },
-          });
-        }
-
-        if (canManageGameServers) {
-          menuItems.push({
-            label: 'Change module configuration',
-            icon: <ConfigIcon />,
-            onClick: () => {
-              navigate({
-                to: '/gameserver/$gameServerId/modules/$moduleId/$moduleVersionTag/update',
-                params: {
-                  gameServerId,
-                  moduleId: module.id,
-                  moduleVersionTag: module.installation!.version?.tag || '',
-                },
-              });
-            },
-          });
-
-          menuItems.push({
-            label: 'Install different version',
-            icon: <UpdateIcon />,
-            onClick: () => {
-              navigate({
-                to: '/gameserver/$gameServerId/modules/$moduleId/$moduleVersionTag/install',
-                params: {
-                  gameServerId,
-                  moduleId: module.id,
-                  moduleVersionTag: module.installation!.version?.tag || '',
-                },
-              });
-            },
-          });
-        }
-
-        menuItems.push({
-          label: 'Copy module ID',
-          icon: <CopyIcon />,
-          onClick: () => {
-            navigator.clipboard.writeText(module.id);
-            enqueueSnackbar('Module ID copied to clipboard', { variant: 'default', type: 'success' });
-          },
-        });
-
-        if (canManageGameServers) {
-          menuItems.push({
-            label: 'Uninstall module',
-            icon: <UninstallIcon />,
-            onClick: () => setOpenUninstallDialog({ installation: module.installation! }),
-            color: 'error',
-          });
-        }
-
+        const m = row.original;
         return (
-          <ActionsContainer>
-            <Dropdown placement="bottom">
-              <Dropdown.Trigger asChild>
-                <IconButton icon={<ActionsIcon />} ariaLabel="Module actions" />
-              </Dropdown.Trigger>
-              <Dropdown.Menu>
-                {menuItems.map((item: any, index) => (
-                  <Dropdown.Menu.Item
-                    key={`module-action-${index}`}
-                    onClick={item.onClick}
-                    label={item.label}
-                    icon={item.icon}
-                  />
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-          </ActionsContainer>
+          <>
+            {m.installation ? (
+              <ModuleInstallationActions gameServerId={gameServerId} mod={m} installation={m.installation} />
+            ) : (
+              <InstallContainer>
+                <UncontrolledModuleVersionSelectQueryField
+                  value={selectedVersions[m.id] || ''}
+                  onChange={(value) => setSelectedVersions((prev) => ({ ...prev, [m.id]: value as string }))}
+                  moduleId={m.id}
+                  name={`version-select-${m.id}`}
+                />
+                <Button onClick={() => handleInstall(m.id)} disabled={!selectedVersions[m.id] || !canManageGameServers}>
+                  Install
+                </Button>
+              </InstallContainer>
+            )}
+          </>
         );
       },
     }),

@@ -34,7 +34,7 @@ interface CronJobConfigFormProps {
 }
 
 export const CronJobConfigForm: FC<CronJobConfigFormProps> = ({ cronjob, readOnly = false, moduleId }) => {
-  const { mutateAsync, isPending } = useCronJobUpdate();
+  const { mutate, isPending } = useCronJobUpdate();
 
   const { control, handleSubmit, formState } = useForm<FormInputs>({
     mode: 'onSubmit',
@@ -45,8 +45,8 @@ export const CronJobConfigForm: FC<CronJobConfigFormProps> = ({ cronjob, readOnl
     },
   });
 
-  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    await mutateAsync({
+  const onSubmit: SubmitHandler<FormInputs> = (data) => {
+    mutate({
       cronJobId: cronjob.id,
       cronJob: data,
       moduleId,

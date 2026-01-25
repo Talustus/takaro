@@ -224,7 +224,7 @@ services:
     ports:
       - "${PUSHGATEWAY_PORT:-9091}:9091"  
   takaro-mcp:
-    image: ghcr.io/gettakaro/mcp:0.0.3
+    image: ghcr.io/gettakaro/mcp:0.0.4
     ports:
       - "${TAKARO_MCP_PORT:-18000}:3000"
     environment:

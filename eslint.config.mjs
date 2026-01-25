@@ -2,15 +2,13 @@
 
 import url from 'node:url';
 import eslint from '@eslint/js';
+import { globalIgnores } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import storybookPlugin from 'eslint-plugin-storybook';
 import prettierConfig from 'eslint-config-prettier';
 
-import { FlatCompat } from '@eslint/eslintrc';
-
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const compat = new FlatCompat({ baseDirectory: __dirname });
 
 export default tseslint.config(
   {
@@ -20,27 +18,25 @@ export default tseslint.config(
     },
   },
 
-  // ignore in all configs
-  {
-    ignores: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/build/**',
-      '**/fixtures/**',
-      '**/__snapshots__/**',
-      '**/coverage/**',
-      '**/_data/**',
-      '**/generated/**',
-      '**/storybook-static/**',
-      '**/.next/**',
-      '**/migrations/**',
-      '**/*.d.ts',
-      '**/jest.config.js',
-      '**/.storybook/**',
-      '**/.docusaurus/**',
-      '**/reports/**'
-    ],
-  },
+  // global ignores
+  globalIgnores([
+    '**/node_modules/**',
+    '**/dist/**',
+    '**/build/**',
+    '**/fixtures/**',
+    '**/__snapshots__/**',
+    '**/coverage/**',
+    '**/_data/**',
+    '**/generated/**',
+    '**/storybook-static/**',
+    '**/.next/**',
+    '**/migrations/**',
+    '**/*.d.ts',
+    '**/jest.config.js',
+    '**/.storybook/**',
+    '**/.docusaurus/**',
+    '**/reports/**'
+  ]),
 
   // extends
   eslint.configs.recommended,
@@ -53,12 +49,7 @@ export default tseslint.config(
   {
     languageOptions: {
       parserOptions: {
-        allowAutommaticSingleRunInference: true,
-        cacheLiftetime: {
-          // We never create/change tsconfig structure - so no need to ever evict the cache
-          // In the rare case that we do - just manually restart IDE
-          glob: 'infinity',
-        },
+        allowAutomaticSingleRunInference: true,
         project: ['tsconfig.json', 'tsconfig.react.json', 'packages/*/tsconfig.json'],
         tsconfigRootDir: __dirname,
         warnOnUnsupportedTypeScriptVersion: true,
@@ -117,9 +108,7 @@ export default tseslint.config(
     extends: [tseslint.configs.disableTypeChecked],
     rules: {
       // turn off other type-aware rules
-      'deprecation/deprecation': 'off',
       'no-undef': 'off',
-      '@typescript-eslint/internal/no-poorly-typed-ts-props': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
     },
   },
@@ -129,7 +118,7 @@ export default tseslint.config(
   {
     files: ['**/*.stories.tsx'],
     extends: [
-      ...compat.config(storybookPlugin.configs.recommended)
+      storybookPlugin.configs['flat/recommended']
     ],
   },
 
@@ -139,10 +128,6 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/no-unused-expressions': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
     }
   },
 
@@ -150,14 +135,12 @@ export default tseslint.config(
   {
     files: ['packages/lib-components/**/*.{ts,tsx,mts,cts,js,jsx}', 'packages/web-main/**/*.{ts,tsx,mts,cts,js,jsx}'],
     extends: [
-      ...compat.config(reactPlugin.configs.recommended),
+      reactPlugin.configs.flat.recommended,
     ],
     rules: {
-      'import/no-default-export': 'off',
       'react/react-in-jsx-scope': 'off',
       'react/no-unescaped-entities': 'off',
       'react/prop-types': 'off',
-      'react/exhaustive-deps': 'off',
     },
     settings: {
       react: {
@@ -165,4 +148,5 @@ export default tseslint.config(
       },
     },
   },
+
 );

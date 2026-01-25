@@ -302,15 +302,15 @@ export const useGameServerModuleInstall = () => {
     useMutation<ModuleInstallationOutputDTO, AxiosError<ModuleInstallationOutputDTOAPI>, InstallModuleDTO>({
       mutationFn: async (moduleInstallation) =>
         (await apiClient.module.moduleInstallationsControllerInstallModule(moduleInstallation)).data.data,
-      onSuccess: async (moduleInstallation, { gameServerId }) => {
+      onSuccess: async (moduleInstallation, { gameServerId, versionId }) => {
         // invalidate list of installed modules
-        await queryClient.invalidateQueries({ queryKey: ModuleInstallationKeys.list() });
+        queryClient.invalidateQueries({ queryKey: ModuleInstallationKeys.list() });
 
         // invalidate the versions query
-        await queryClient.invalidateQueries({ queryKey: moduleKeys.versions.list(moduleInstallation.id) });
+        queryClient.invalidateQueries({ queryKey: moduleKeys.versions.list(moduleInstallation.moduleId) });
 
         // invalidate the version query
-        await queryClient.invalidateQueries();
+        queryClient.invalidateQueries({ queryKey: moduleKeys.versions.detail(versionId) });
 
         // update installed module cache
         queryClient.setQueryData<ModuleInstallationOutputDTO>(

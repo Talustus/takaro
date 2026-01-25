@@ -59,12 +59,14 @@ function Component() {
   if (view === 'builder') {
     if (canRenderInBuilder(mod.latestVersion.configSchema, mod.latestVersion.uiSchema) === false) {
       enqueueSnackbar('This module could not be viewed in builder mode', { type: 'error', variant: 'default' });
-      throw navigate({
+      navigate({
         to: '/modules/$moduleId/view/$moduleVersionTag',
-        params: { moduleId: Route.useParams().moduleId },
+        params: { moduleId: params.moduleId, moduleVersionTag: params.moduleVersionTag },
         search: { view: 'manual' },
         replace: true,
       });
+      // Prevent rendering while navigation is in progress
+      return null;
     }
   }
 

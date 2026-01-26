@@ -18,13 +18,14 @@ export const TooltipTrigger = forwardRef<HTMLElement, TooltipTriggerProps>(funct
     throw new Error('Tooltip.Trigger requires a single React element as child');
   }
 
-  return cloneElement(
-    children,
-    context.getReferenceProps({
+  const triggerProps = {
+    ...context.getReferenceProps({
       ...props,
-      ...children.props,
+      ...(children.props as object),
       ref,
-      'data-state': context.open ? 'open' : 'closed',
     }),
-  );
+    'data-state': context.open ? 'open' : 'closed',
+  };
+
+  return cloneElement(children, triggerProps);
 });

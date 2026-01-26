@@ -1,6 +1,6 @@
 import { Dropdown, useTheme } from '@takaro/lib-components';
 import { useNavigate } from '@tanstack/react-router';
-import { FC, PropsWithChildren, useState } from 'react';
+import { FC, PropsWithChildren, ReactElement, useState } from 'react';
 
 import {
   AiOutlineUserDelete as KickIcon,
@@ -59,7 +59,7 @@ export const PlayerActions: FC<PropsWithChildren<PlayerActionsProps>> = ({ child
 
       <PlayerBanDialog playerId={playerId} onOpenChange={setShowPlayerBanDialog} open={showPlayerBanDialog} />
       <Dropdown>
-        <Dropdown.Trigger>{children}</Dropdown.Trigger>
+        <Dropdown.Trigger>{children as ReactElement}</Dropdown.Trigger>
         <Dropdown.Menu>
           <Dropdown.Menu.Group label="Actions">
             <Dropdown.Menu.Item

@@ -18,15 +18,16 @@ export const PopoverTrigger = forwardRef<HTMLElement, PopoverTriggerProps>(funct
     throw new Error('Popover.Trigger requires a single React element as child');
   }
 
-  return cloneElement(
-    children,
-    context.getReferenceProps({
+  const triggerProps = {
+    ...context.getReferenceProps({
       ref,
       ...props,
-      ...children.props,
-      'data-state': context.open ? 'open' : 'closed',
+      ...(children.props as object),
       onFocus: props.onFocus,
       onBlur: props.onBlur,
     }),
-  );
+    'data-state': context.open ? 'open' : 'closed',
+  };
+
+  return cloneElement(children, triggerProps);
 });

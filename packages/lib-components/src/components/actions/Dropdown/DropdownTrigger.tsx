@@ -38,7 +38,7 @@ export const DropdownTrigger = forwardRef<HTMLElement, DropdownTriggerProps>(fun
     context.getReferenceProps({
       ref,
       ...props,
-      ...children.props,
+      ...(children.props as object),
       onClick(event: React.MouseEvent) {
         event.stopPropagation();
       },

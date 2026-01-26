@@ -323,7 +323,12 @@ class GameServerManager {
 
     let removedCount = 0;
     // Remove any servers that are no longer in the list
-    for (const [gameServerId] of this.emitterMap) {
+    for (const [gameServerId, { emitter }] of this.emitterMap) {
+      // Skip generic servers - they manage their own lifecycle via websocket
+      if (emitter instanceof GenericEmitter) {
+        continue;
+      }
+
       if (!flatGameServers.find((server) => server.id === gameServerId)) {
         try {
           this.log.info(`GameServer ${gameServerId} is no longer in the list, removing`);

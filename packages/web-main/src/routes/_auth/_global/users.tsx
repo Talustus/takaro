@@ -105,7 +105,7 @@ function Component() {
         const user = info.row.original;
         return (
           <Tooltip placement="right">
-            <Tooltip.Trigger asChild>
+            <Tooltip.Trigger>
               <Link className="underline" to="/user/$userId" params={{ userId: user.id }}>
                 {info.getValue()}
               </Link>
@@ -143,7 +143,7 @@ function Component() {
       header: () => {
         return (
           <Tooltip>
-            <Tooltip.Trigger asChild>
+            <Tooltip.Trigger>
               <span>Team member (Dashboard user)</span>
             </Tooltip.Trigger>
             <Tooltip.Content>User that has access to the dashboard</Tooltip.Content>

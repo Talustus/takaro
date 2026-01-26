@@ -96,7 +96,7 @@ export const GenericFileField = forwardRef<HTMLInputElement, GenericFileFieldPro
           <span>{value && value.length > 0 ? getFileNames(value) : placeholder}</span>
           {value && value.length > 0 ? (
             <Tooltip>
-              <Tooltip.Trigger asChild>
+              <Tooltip.Trigger>
                 <IconButton
                   icon={<ClearIcon />}
                   ariaLabel="Remove files"
@@ -111,7 +111,7 @@ export const GenericFileField = forwardRef<HTMLInputElement, GenericFileFieldPro
             </Tooltip>
           ) : (
             <Tooltip>
-              <Tooltip.Trigger asChild>
+              <Tooltip.Trigger>
                 <IconButton
                   icon={<UploadIcon />}
                   ariaLabel="Upload files"

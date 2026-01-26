@@ -128,7 +128,7 @@ const IpInfo: FC<{ ipInfo: IpHistoryOutputDTO[] }> = ({ ipInfo }) => {
                   </IpWhoisLink>
                   {ip.country && (
                     <Tooltip>
-                      <Tooltip.Trigger asChild>
+                      <Tooltip.Trigger>
                         <span style={{ display: 'inline-flex' }}>
                           <CountryCodeToEmoji countryCode={ip.country} />
                         </span>

@@ -185,7 +185,7 @@ export const ShopListingCreateUpdateForm: FC<ShopListingCreateUpdateFormProps> =
 
                         <div>
                           <Tooltip placement="top">
-                            <Tooltip.Trigger asChild>
+                            <Tooltip.Trigger>
                               <IconButton
                                 disabled={readOnly || index === fields.length - 1}
                                 onClick={() => moveItem(index, index + 1)}
@@ -197,7 +197,7 @@ export const ShopListingCreateUpdateForm: FC<ShopListingCreateUpdateFormProps> =
                           </Tooltip>
 
                           <Tooltip placement="top">
-                            <Tooltip.Trigger asChild>
+                            <Tooltip.Trigger>
                               <IconButton
                                 disabled={readOnly || index === 0}
                                 onClick={() => {
@@ -210,7 +210,7 @@ export const ShopListingCreateUpdateForm: FC<ShopListingCreateUpdateFormProps> =
                             <Tooltip.Content>Move up</Tooltip.Content>
                           </Tooltip>
                           <Tooltip placement="top">
-                            <Tooltip.Trigger asChild>
+                            <Tooltip.Trigger>
                               <IconButton
                                 size="tiny"
                                 onClick={() => removeItem(index)}

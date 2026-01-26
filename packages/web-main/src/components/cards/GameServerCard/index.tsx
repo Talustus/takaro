@@ -68,7 +68,7 @@ export const GameServerCard: FC<GameServerOutputDTO> = ({ id, name, type, reacha
                 <h3>{name}</h3>
                 <div>
                   <Tooltip placement="bottom">
-                    <Tooltip.Trigger asChild>
+                    <Tooltip.Trigger>
                       <p>{type}</p>
                     </Tooltip.Trigger>
                     <Tooltip.Content>Game server type</Tooltip.Content>

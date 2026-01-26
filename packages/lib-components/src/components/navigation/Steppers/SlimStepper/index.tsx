@@ -83,7 +83,7 @@ export const SlimStepper: FC<PropsWithChildren<SlimStepperProps>> & {
             >
               {StepStates.CURRENT === getStepState(index, currentStep) && showTooltip !== 'never' ? (
                 <Tooltip placement="bottom">
-                  <Tooltip.Trigger asChild>
+                  <Tooltip.Trigger>
                     <Dot stepState={getStepState(index, currentStep)} />
                   </Tooltip.Trigger>
                   <Tooltip.Content>{name}</Tooltip.Content>

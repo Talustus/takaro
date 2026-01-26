@@ -15,7 +15,7 @@ export function CopyButton<T = any, S extends StrictRJSFSchema = RJSFSchema, F e
   } = props;
   return (
     <Tooltip placement="left">
-      <Tooltip.Trigger asChild>
+      <Tooltip.Trigger>
         <IconButton {...props} icon={<CopyIcon />} ariaLabel="Copy item" color="primary" />
       </Tooltip.Trigger>
       <Tooltip.Content>{translateString(TranslatableString.CopyButton)}</Tooltip.Content>
@@ -31,7 +31,7 @@ export function MoveDownButton<T = any, S extends StrictRJSFSchema = RJSFSchema,
   } = props;
   return (
     <Tooltip placement="left">
-      <Tooltip.Trigger asChild>
+      <Tooltip.Trigger>
         <IconButton {...props} icon={<ArrowDownIcon />} ariaLabel="Move Item down" color="primary" />
       </Tooltip.Trigger>
       <Tooltip.Content>{translateString(TranslatableString.MoveDownButton)}</Tooltip.Content>
@@ -47,7 +47,7 @@ export function MoveUpButton<T = any, S extends StrictRJSFSchema = RJSFSchema, F
   } = props;
   return (
     <Tooltip placement="left">
-      <Tooltip.Trigger asChild>
+      <Tooltip.Trigger>
         <IconButton {...props} icon={<ArrowUpIcon />} ariaLabel="Move Item up" color="primary" />
       </Tooltip.Trigger>
       <Tooltip.Content>{translateString(TranslatableString.MoveUpButton)}</Tooltip.Content>
@@ -65,7 +65,7 @@ export function RemoveButton<T = any, S extends StrictRJSFSchema = RJSFSchema, F
   } = otherProps;
   return (
     <Tooltip placement="left">
-      <Tooltip.Trigger asChild>
+      <Tooltip.Trigger>
         <IconButton
           {...props}
           icon={<DeleteIcon fill={theme.colors.error} />}

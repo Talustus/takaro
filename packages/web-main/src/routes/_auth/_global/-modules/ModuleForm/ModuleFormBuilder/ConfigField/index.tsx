@@ -98,7 +98,7 @@ export const ConfigField: FC<ConfigFieldProps> = ({ control, index, remove, id, 
         </div>
         {!readOnly && (
           <Tooltip>
-            <Tooltip.Trigger asChild>
+            <Tooltip.Trigger>
               <IconButton
                 onClick={() => remove(index)}
                 icon={<RemoveIcon cursor="pointer" size={18} />}

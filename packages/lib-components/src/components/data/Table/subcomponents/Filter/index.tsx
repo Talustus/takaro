@@ -169,7 +169,7 @@ export function Filter<DataType extends object>({ table }: FilterProps<DataType>
                 <FilterContainer key={field.id} hasMultipleFields={fields.length > 1}>
                   {fields.length > 1 && (
                     <Tooltip key={`remove-${field.id}`}>
-                      <Tooltip.Trigger asChild>
+                      <Tooltip.Trigger>
                         <IconButton
                           size="tiny"
                           icon={<RemoveIcon />}

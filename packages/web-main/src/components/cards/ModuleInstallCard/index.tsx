@@ -37,7 +37,7 @@ export const ModuleInstallCard: FC<IModuleCardProps> = ({ mod, installation, gam
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                 {installation && !installation.systemConfig['enabled'] && (
                   <Tooltip>
-                    <Tooltip.Trigger asChild>
+                    <Tooltip.Trigger>
                       <Chip label="disabled" color="error" />
                     </Tooltip.Trigger>
                     <Tooltip.Content>
@@ -49,7 +49,7 @@ export const ModuleInstallCard: FC<IModuleCardProps> = ({ mod, installation, gam
 
                 {mod.author === 'Takaro' && (
                   <Tooltip>
-                    <Tooltip.Trigger asChild>
+                    <Tooltip.Trigger>
                       <Chip color="primary" label="Official" />
                     </Tooltip.Trigger>
                     <Tooltip.Content>This module is developed and maintained by the Takaro team.</Tooltip.Content>
@@ -59,7 +59,7 @@ export const ModuleInstallCard: FC<IModuleCardProps> = ({ mod, installation, gam
                 {installation && (
                   <>
                     <Tooltip>
-                      <Tooltip.Trigger asChild>
+                      <Tooltip.Trigger>
                         <Chip color="backgroundAccent" label={installation.version.tag} />
                       </Tooltip.Trigger>
                       <Tooltip.Content>

@@ -30,7 +30,7 @@ export const ToggleButton = forwardRef<HTMLButtonElement, ToggleButtonProps>(fun
   if (tooltip) {
     return (
       <Tooltip>
-        <Tooltip.Trigger asChild>
+        <Tooltip.Trigger>
           <Item isSelected={selected} isDisabled={disabled} onClick={handleOnClick} ref={ref}>
             {children}
           </Item>

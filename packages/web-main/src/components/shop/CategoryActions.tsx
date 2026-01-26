@@ -46,7 +46,7 @@ export const CategoryActions: FC<CategoryActionsProps> = ({ category, gameServer
         initialOpen={false}
       />
       <Dropdown>
-        <Dropdown.Trigger asChild>
+        <Dropdown.Trigger>
           <IconButton icon={<MenuIcon />} ariaLabel="Actions" />
         </Dropdown.Trigger>
         <Dropdown.Menu>

@@ -63,7 +63,7 @@ export const ModuleVersionInstallForm: FC<ModuleVersionInstallFormProps> = ({
           returnVariant="tag"
         />
         <Tooltip disabled={!isLatestSelected}>
-          <Tooltip.Trigger asChild>
+          <Tooltip.Trigger>
             <Button color={isLatestSelected ? 'warning' : 'primary'} type="submit">
               Install
             </Button>

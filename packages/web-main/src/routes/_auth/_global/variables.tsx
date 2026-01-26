@@ -264,7 +264,7 @@ const VariableMenu: FC<{ variable: VariableOutputDTO }> = ({ variable }) => {
   return (
     <>
       <Dropdown>
-        <Dropdown.Trigger asChild>
+        <Dropdown.Trigger>
           <IconButton icon={<ActionIcon />} ariaLabel="variable-actions" />
         </Dropdown.Trigger>
         <Dropdown.Menu>

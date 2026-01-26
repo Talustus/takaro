@@ -59,7 +59,7 @@ export const PlayerActions: FC<PropsWithChildren<PlayerActionsProps>> = ({ child
 
       <PlayerBanDialog playerId={playerId} onOpenChange={setShowPlayerBanDialog} open={showPlayerBanDialog} />
       <Dropdown>
-        <Dropdown.Trigger asChild>{children}</Dropdown.Trigger>
+        <Dropdown.Trigger>{children}</Dropdown.Trigger>
         <Dropdown.Menu>
           <Dropdown.Menu.Group label="Actions">
             <Dropdown.Menu.Item

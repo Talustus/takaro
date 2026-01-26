@@ -1,28 +1,17 @@
-import {
-  forwardRef,
-  cloneElement,
-  isValidElement,
-  HTMLProps,
-  PropsWithChildren,
-  useState,
-  ReactElement,
-  ReactNode,
-} from 'react';
+import { forwardRef, cloneElement, isValidElement, HTMLProps, useState, ReactElement, ReactNode } from 'react';
 import { useDropdownContext } from './DropdownContext';
 import { useMergeRefs } from '@floating-ui/react';
 import { TooltipOptions } from '../../feedback/Tooltip/useTooltip';
 import { Tooltip } from '../../../components';
 
-export type DropdownTriggerProps = HTMLProps<HTMLElement> &
-  PropsWithChildren<{
-    asChild?: boolean;
-    tooltipOptions?: TooltipOptions & { content: ReactNode };
-  }>;
+export interface DropdownTriggerProps extends Omit<HTMLProps<HTMLElement>, 'children'> {
+  children: ReactElement;
+  tooltipOptions?: TooltipOptions & { content: ReactNode };
+}
 
 export const DropdownTrigger = forwardRef<HTMLElement, DropdownTriggerProps>(function DropdownTrigger(
   {
     children,
-    asChild = false,
     tooltipOptions = {
       initialOpen: false,
       placement: 'top', // because dropdown will be below by default
@@ -32,7 +21,7 @@ export const DropdownTrigger = forwardRef<HTMLElement, DropdownTriggerProps>(fun
   propRef,
 ) {
   const context = useDropdownContext();
-  const childrenRef = (children as any).ref;
+  const childrenRef = (children as ReactElement & { ref?: React.Ref<HTMLElement> }).ref;
   const ref = useMergeRefs([context.refs.setReference, propRef, childrenRef]);
 
   const [unControlledOpen, setUncontrolledOpen] = useState<boolean>(tooltipOptions?.initialOpen ?? false);
@@ -40,39 +29,21 @@ export const DropdownTrigger = forwardRef<HTMLElement, DropdownTriggerProps>(fun
   const open = tooltipOptions.open ?? unControlledOpen;
   const setOpen = tooltipOptions.onOpenChange ?? setUncontrolledOpen;
 
-  let inner: ReactElement;
-
-  // `asChild` allows the user to pass any element as the anchor
-  if (asChild && isValidElement(children)) {
-    inner = cloneElement(
-      children,
-      context.getReferenceProps({
-        ref,
-        ...props,
-        ...children.props,
-        onClick(event) {
-          event.stopPropagation();
-        },
-      }),
-    );
-  } else {
-    inner = (
-      <button
-        ref={ref}
-        type="button"
-        // The user can style the trigger based on the state
-        {...context.getReferenceProps({
-          ...props,
-          ref,
-          onClick(event) {
-            event.stopPropagation();
-          },
-        })}
-      >
-        {children}
-      </button>
-    );
+  if (!isValidElement(children)) {
+    throw new Error('Dropdown.Trigger requires a single React element as child');
   }
+
+  const inner = cloneElement(
+    children,
+    context.getReferenceProps({
+      ref,
+      ...props,
+      ...children.props,
+      onClick(event: React.MouseEvent) {
+        event.stopPropagation();
+      },
+    }),
+  );
 
   if (tooltipOptions && tooltipOptions.content) {
     return (

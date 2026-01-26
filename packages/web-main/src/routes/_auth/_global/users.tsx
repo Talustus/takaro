@@ -249,7 +249,7 @@ const UserMenu: FC<{ user: UserOutputWithRolesDTO }> = ({ user }) => {
   return (
     <>
       <Dropdown placement="left">
-        <Dropdown.Trigger asChild>
+        <Dropdown.Trigger>
           <IconButton icon={<ActionIcon />} ariaLabel="user-actions" />
         </Dropdown.Trigger>
         <Dropdown.Menu>

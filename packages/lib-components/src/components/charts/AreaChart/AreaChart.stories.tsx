@@ -74,7 +74,7 @@ export const PingExample: StoryFn = () => {
       <Card variant="outline">
         <Card.Title label="Ping latency">
           <Dropdown>
-            <Dropdown.Trigger asChild>
+            <Dropdown.Trigger>
               <IconButton icon={<MenuIcon />} ariaLabel="open menu" />
             </Dropdown.Trigger>
             <Dropdown.Menu>

@@ -29,7 +29,7 @@ export const Default: StoryFn = () => {
   return (
     <Wrapper>
       <Dropdown>
-        <Dropdown.Trigger asChild>
+        <Dropdown.Trigger>
           <IconButton icon={<MenuIcon />} ariaLabel="click me" />
         </Dropdown.Trigger>
         <Dropdown.Menu>
@@ -63,14 +63,13 @@ export const Default: StoryFn = () => {
   );
 };
 
-export const ToolTipOnTrigger = () => {
+export const WithTooltip = () => {
   return (
     <>
-      Because <strong>Dropdown.trigger</strong> adds properties to the child element, The IconButton cannot be wrapped
-      in a tooltip. Tooltip props should be passed as props to the <strong>Dropdown.trigger</strong> element.
+      Because <strong>Dropdown.Trigger</strong> clones the child element, the IconButton cannot be wrapped in a tooltip
+      directly. Tooltip props should be passed via the <strong>tooltipOptions</strong> prop.
       <Dropdown>
         <Dropdown.Trigger
-          asChild
           tooltipOptions={{
             content: 'This is the tooltip',
             placement: 'top',

@@ -269,7 +269,7 @@ export const ModulesTableView: FC<ModulesTableViewProps> = () => {
         return (
           <ActionsContainer>
             <Dropdown placement="bottom">
-              <Dropdown.Trigger asChild>
+              <Dropdown.Trigger>
                 <IconButton icon={<ActionsIcon />} ariaLabel="Module actions" />
               </Dropdown.Trigger>
               <Dropdown.Menu>

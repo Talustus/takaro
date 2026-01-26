@@ -46,7 +46,7 @@ export const RoleActions: FC<RoleActionsProps> = ({ roleId, roleName, isSystem }
   return (
     <>
       <Dropdown>
-        <Dropdown.Trigger asChild>
+        <Dropdown.Trigger>
           <IconButton icon={<MenuIcon />} ariaLabel="Settings" />
         </Dropdown.Trigger>
         <Dropdown.Menu>

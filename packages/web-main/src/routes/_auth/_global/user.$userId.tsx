@@ -115,7 +115,7 @@ const UserRolesTable: FC<IUserRolesTableProps> = ({ roles, userId }) => {
 
       cell: (info) => (
         <Dropdown>
-          <Dropdown.Trigger asChild>
+          <Dropdown.Trigger>
             <IconButton icon={<ActionIcon />} ariaLabel="player-actions" />
           </Dropdown.Trigger>
           <Dropdown.Menu>

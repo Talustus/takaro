@@ -98,7 +98,7 @@ function Component() {
         <MaxUsage value={currentGameServerCount} total={maxGameserverCount} unit="Gameservers" />
         {hasManageGameServersPermission && (
           <Dropdown>
-            <Dropdown.Trigger asChild>
+            <Dropdown.Trigger>
               <Button icon={<MenuIcon />}>Game Server Actions</Button>
             </Dropdown.Trigger>
             <Dropdown.Menu>
@@ -202,7 +202,7 @@ export const GameServerActions: FC<GameServerActionsProps> = ({ gameServerId, ga
           gameServerName={gameServerName}
         />
         <Dropdown>
-          <Dropdown.Trigger asChild>
+          <Dropdown.Trigger>
             <IconButton icon={<MenuIcon />} ariaLabel="Settings" />
           </Dropdown.Trigger>
           <Dropdown.Menu>

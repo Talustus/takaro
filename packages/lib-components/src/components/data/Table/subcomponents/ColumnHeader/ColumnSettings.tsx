@@ -86,7 +86,7 @@ export function ColumnSettings<DataType extends object>({
         </Tooltip>
       )}
       <Dropdown>
-        <Dropdown.Trigger asChild>
+        <Dropdown.Trigger>
           <MenuTrigger isVisible={columnIsHovered}>
             <IconButton icon={<MenuIcon />} ariaLabel="column settings" />
           </MenuTrigger>

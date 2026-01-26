@@ -91,7 +91,7 @@ export const GenericDateRangePicker: FC<GenericDateRangePickerProps> = ({
               dispatch({ type: 'toggle_quick_select_popover', payload: { toggleQuickSelect: open } })
             }
           >
-            <Popover.Trigger asChild>
+            <Popover.Trigger>
               <QuickSelectContainer
                 readOnly={readOnly}
                 disabled={disabled}
@@ -116,7 +116,7 @@ export const GenericDateRangePicker: FC<GenericDateRangePickerProps> = ({
               dispatch({ type: 'toggle_start_date_popover', payload: { toggleStartDate: open } });
             }}
           >
-            <Popover.Trigger asChild>
+            <Popover.Trigger>
               <ItemContainer
                 disabled={disabled}
                 readOnly={readOnly}
@@ -143,7 +143,7 @@ export const GenericDateRangePicker: FC<GenericDateRangePickerProps> = ({
                   dispatch({ type: 'toggle_end_date_popover', payload: { toggleEndDate: open } });
                 }}
               >
-                <Popover.Trigger asChild>
+                <Popover.Trigger>
                   <ItemContainer
                     disabled={disabled}
                     readOnly={readOnly}

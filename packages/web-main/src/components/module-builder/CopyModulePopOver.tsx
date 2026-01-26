@@ -37,7 +37,7 @@ export const CopyModulePopOver: FC<CopyModulePopOverProps> = ({ moduleId }) => {
 
   return (
     <Popover placement="bottom" onOpenChange={setOpen} open={open}>
-      <Popover.Trigger asChild>
+      <Popover.Trigger>
         <div>
           <Tooltip>
             <Tooltip.Trigger>

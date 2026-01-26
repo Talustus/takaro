@@ -1,8 +1,8 @@
 import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
-import { PermissionsGuard, PermissionsGuardProps } from '.';
+import { Meta, StoryObj } from '@storybook/react-vite';
+import { PermissionsGuard, PermissionsGuardProps } from '../PermissionsGuard';
 import { PERMISSIONS } from '@takaro/apiclient';
-import { Alert } from '../../feedback';
+import { Alert } from '../../feedback/Alert';
 
 export default {
   title: 'Other/PermissionsGuard',

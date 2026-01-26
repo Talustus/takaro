@@ -10,20 +10,17 @@ interface CategoryDeleteDialogProps extends RequiredDialogOptions {
 
 export const CategoryDeleteDialog = forwardRef<DeleteImperativeHandle, CategoryDeleteDialogProps>(
   function CategoryDeleteDialog({ category, ...dialogOptions }, ref) {
-    const { mutate, isPending: isDeleting, isSuccess, error } = useShopCategoryDelete();
+    const { mutate, isPending: isDeleting, error } = useShopCategoryDelete();
+    const onSuccessCategoryDelete = () => dialogOptions.onOpenChange(false);
 
     useImperativeHandle(ref, () => ({
-      triggerDelete: () => mutate({ shopCategoryId: category.id }),
+      triggerDelete: () => mutate({ shopCategoryId: category.id }, { onSuccess: onSuccessCategoryDelete }),
     }));
 
     const handleOnDelete = (e: MouseEvent) => {
       e.stopPropagation();
-      mutate({ shopCategoryId: category.id });
+      mutate({ shopCategoryId: category.id }, { onSuccess: onSuccessCategoryDelete });
     };
-
-    if (isSuccess) {
-      dialogOptions.onOpenChange(false);
-    }
 
     return (
       <Dialog {...dialogOptions}>

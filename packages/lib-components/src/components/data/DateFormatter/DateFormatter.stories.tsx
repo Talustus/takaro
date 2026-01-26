@@ -1,6 +1,6 @@
 // TODO: save images locally so when there is no network they are still loaded.
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { DateFormatter, DateFormatterProps } from '.';
 import { DateTime } from 'luxon';
 

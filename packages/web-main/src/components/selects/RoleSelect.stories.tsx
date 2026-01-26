@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { RoleSelectView, RoleSelectViewProps } from './RoleSelectQueryField';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { RoleOutputDTO } from '@takaro/apiclient';

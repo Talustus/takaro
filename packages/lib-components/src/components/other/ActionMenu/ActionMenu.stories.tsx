@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { Action, ActionMenu, ActionMenuProps } from '.';
 import { styled } from '../../../styled';
 import { useOutsideAlerter } from '../../../hooks';

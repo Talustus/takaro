@@ -23,17 +23,9 @@ export const PlayerBanDialog: FC<PlayerBanDialogProps> = ({ playerId, ...dialogO
     resolver: zodResolver(validationSchema),
   });
 
-  const { mutate: mutateBanPlayer, isPending: isLoadingBanPlayer, error: banError, isSuccess } = useBanPlayer();
+  const { mutate: mutateBanPlayer, isPending: isLoadingBanPlayer, error: banError } = useBanPlayer();
 
-  if (isSuccess) {
-    dialogOptions.onOpenChange(false);
-  }
-
-  const handleOnBanPlayer: SubmitHandler<z.infer<typeof validationSchema>> = async ({
-    reason,
-    gameServerId,
-    expiresAt,
-  }) => {
+  const handleOnBanPlayer: SubmitHandler<z.infer<typeof validationSchema>> = ({ reason, gameServerId, expiresAt }) => {
     // If no gameServerId is provided, the ban is considered global. But isGlobal always needs to be set explicitly.
     const isGlobal = !!gameServerId;
     // if global is selected, it will have value null, api requires undefined
@@ -41,9 +33,10 @@ export const PlayerBanDialog: FC<PlayerBanDialogProps> = ({ playerId, ...dialogO
       gameServerId = undefined;
     }
 
-    console.log(gameServerId);
-
-    mutateBanPlayer({ playerId, reason, gameServerId, isGlobal, until: expiresAt });
+    mutateBanPlayer(
+      { playerId, reason, gameServerId, isGlobal, until: expiresAt },
+      { onSuccess: () => dialogOptions.onOpenChange(false) },
+    );
   };
 
   return (

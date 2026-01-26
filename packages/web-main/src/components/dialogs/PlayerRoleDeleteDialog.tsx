@@ -1,5 +1,5 @@
 import { Button, Dialog, FormError, styled } from '@takaro/lib-components';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { RequiredDialogOptions } from '.';
 import { usePlayerRoleRemove } from '../../queries/player';
 
@@ -25,21 +25,11 @@ export const PlayerRoleDeleteDialog: FC<PlayerRoleDeleteDialogProps> = ({
   playerId,
   ...dialogOptions
 }) => {
-  const { mutate, isPending, isSuccess, error } = usePlayerRoleRemove();
+  const { mutate, isPending, error } = usePlayerRoleRemove();
 
   const handleOnDelete = () => {
-    mutate({
-      playerId,
-      roleId,
-      gameServerId,
-    });
+    mutate({ playerId, roleId, gameServerId }, { onSuccess: () => dialogOptions.onOpenChange(false) });
   };
-
-  useEffect(() => {
-    if (isSuccess) {
-      dialogOptions.onOpenChange(false);
-    }
-  }, [isSuccess]);
 
   return (
     <Dialog {...dialogOptions}>

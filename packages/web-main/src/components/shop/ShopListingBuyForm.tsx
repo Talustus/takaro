@@ -27,7 +27,7 @@ export const ShopListingBuyForm: FC<ShopListingBuyFormProps> = ({
   currencyName,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { mutateAsync: createShopOrderMutate, isPending: isPendingShopOrderCreate } = useShopOrderCreate();
+  const { mutate: createShopOrderMutate, isPending: isPendingShopOrderCreate } = useShopOrderCreate();
   const { handleSubmit, control, watch } = useForm<z.infer<typeof validationSchema>>({
     mode: 'onSubmit',
     defaultValues: {
@@ -36,21 +36,22 @@ export const ShopListingBuyForm: FC<ShopListingBuyFormProps> = ({
     resolver: zodResolver(validationSchema),
   });
 
-  const handleOnBuyClick: SubmitHandler<z.infer<typeof validationSchema>> = async ({ amount }) => {
-    try {
-      await createShopOrderMutate({
-        amount,
-        listingId: shopListingId,
-      });
-
-      enqueueSnackbar({
-        variant: 'default',
-        type: 'success',
-        message: `successfully bought listing for ${amount * price} ${currencyName}!`,
-      });
-    } catch {
-      enqueueSnackbar({ variant: 'default', type: 'error', message: 'Failed to buy listing ${}' });
-    }
+  const handleOnBuyClick: SubmitHandler<z.infer<typeof validationSchema>> = ({ amount }) => {
+    createShopOrderMutate(
+      { amount, listingId: shopListingId },
+      {
+        onSuccess: () => {
+          enqueueSnackbar({
+            variant: 'default',
+            type: 'success',
+            message: `successfully bought listing for ${amount * price} ${currencyName}!`,
+          });
+        },
+        onError: () => {
+          enqueueSnackbar({ variant: 'default', type: 'error', message: 'Failed to buy listing' });
+        },
+      },
+    );
   };
 
   return (

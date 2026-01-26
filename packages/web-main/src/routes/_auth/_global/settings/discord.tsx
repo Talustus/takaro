@@ -9,7 +9,7 @@ import { discordGuildInfiniteQueryOptions, discordInviteQueryOptions } from '../
 
 export const Route = createFileRoute('/_auth/_global/settings/discord')({
   loader: async ({ context }) => {
-    const opts = discordGuildInfiniteQueryOptions({ sortBy: 'takaroEnabled', sortDirection: 'desc', page: 0 });
+    const opts = discordGuildInfiniteQueryOptions({ sortBy: 'takaroEnabled', sortDirection: 'desc' });
     const guilds =
       context.queryClient.getQueryData(opts.queryKey) ?? (await context.queryClient.fetchInfiniteQuery(opts));
     const invites = await context.queryClient.ensureQueryData(discordInviteQueryOptions());
@@ -68,9 +68,13 @@ function Component() {
     fetchNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    ...discordGuildInfiniteQueryOptions({}),
+    ...discordGuildInfiniteQueryOptions({ sortBy: 'takaroEnabled', sortDirection: 'desc' }),
     initialData: loaderData.guilds,
   });
+
+  const guildComponents = guilds.pages
+    .flatMap((page) => page.data)
+    .map((guild) => <GuildCard key={guild.id} guild={guild} />);
 
   return (
     <Fragment>
@@ -86,20 +90,18 @@ function Component() {
           </Card.Body>
         </Card>
       </Flex>
-      <h1> Guilds</h1>
-      <CardList>
-        {guilds.pages
-          .flatMap((page) => page.data)
-          .map((guild) => (
-            <GuildCard key={guild.id} guild={guild} />
-          ))}
-      </CardList>
-      <InfiniteScroll
-        isFetching={isFetching}
-        hasNextPage={hasNextPage}
-        fetchNextPage={fetchNextPage}
-        isFetchingNextPage={isFetchingNextPage}
-      />
+      {guildComponents.length > 0 && (
+        <div>
+          <h1> Guilds</h1>
+          <CardList>{guildComponents}</CardList>
+          <InfiniteScroll
+            isFetching={isFetching}
+            hasNextPage={hasNextPage}
+            fetchNextPage={fetchNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+          />
+        </div>
+      )}
     </Fragment>
   );
 }

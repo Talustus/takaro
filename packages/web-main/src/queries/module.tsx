@@ -41,7 +41,6 @@ import {
 import { queryParamsToArray, getNextPage, mutationWrapper } from './util';
 import { AxiosError, AxiosResponse } from 'axios';
 import { ErrorMessageMapping } from '@takaro/lib-components/src/errors';
-import { queryClient } from '../queryClient';
 import { useSnackbar } from 'notistack';
 
 export const moduleKeys = {
@@ -254,6 +253,7 @@ export const useModuleExport = () => {
 
 export const useModuleImport = () => {
   const apiClient = getApiClient();
+  const queryClient = useQueryClient();
 
   return mutationWrapper<void, ModuleTransferDTO>(
     useMutation<AxiosResponse<void>, AxiosError<void>, ModuleTransferDTO>({

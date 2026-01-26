@@ -128,15 +128,14 @@ export const useUserLinkPlayerProfile = () => {
   );
 };
 
-export const useUserRemoveRole = ({ userId }: { userId: string }) => {
+export const useUserRemoveRole = () => {
   const apiClient = getApiClient();
   const queryClient = useQueryClient();
 
   return mutationWrapper<APIOutput, RoleInput>(
     useMutation<APIOutput, AxiosError<APIOutput>, RoleInput>({
       mutationFn: async ({ userId, roleId }) => (await apiClient.user.userControllerRemoveRole(userId, roleId)).data,
-      onSuccess: async () => {
-        // invalidate user because new role assignment
+      onSuccess: (_, { userId }) => {
         queryClient.invalidateQueries({ queryKey: userKeys.detail(userId) });
       },
     }),

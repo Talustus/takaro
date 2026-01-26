@@ -33,7 +33,7 @@ export const Editor: FC<EditorProps> = ({ readOnly }) => {
   const [dirtyFiles, setDirtyFiles] = useState<Set<string>>(new Set());
   const [modelVersionId, setModelVersionId] = useState<number>();
   const { enqueueSnackbar } = useSnackbar();
-  const { mutateAsync: updateFunction } = useFunctionUpdate();
+  const { mutate: updateFunction } = useFunctionUpdate();
   const editorInstance = useRef<mon.editor.IStandaloneCodeEditor>();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const monacoRef = useRef<typeof mon | null>(null);
@@ -47,53 +47,40 @@ export const Editor: FC<EditorProps> = ({ readOnly }) => {
     throw new Error('Editor should not be rendered without an active file');
   }
 
-  const saveFile = async () => {
+  const saveFile = () => {
     if (!activeFile) return;
-    try {
-      if (readOnly) {
-        enqueueSnackbar('You cannot save a read-only file', { variant: 'default', type: 'error' });
-        return;
-      }
+    if (readOnly) {
+      enqueueSnackbar('You cannot save a read-only file', { variant: 'default', type: 'error' });
+      return;
+    }
 
-      const model = editorInstance.current?.getModel();
+    const model = editorInstance.current?.getModel();
 
-      if (model) {
-        /*
-         * We can not use this because the modelMarkers are updated async
-         * and are not immediately up to date. A better solution would be to
-         * use an actual typescript server to check the syntax errors.
-         
-        const markers = monacoRef.current?.editor.getModelMarkers({ resource: model.uri });
-        const hasSyntaxErrors = markers?.some((marker) => marker.severity === monacoRef.current?.MarkerSeverity.Error);
-        console.log(hasSyntaxErrors);
- 
-        if (hasSyntaxErrors) {
-          enqueueSnackbar(<span>Cannot save file with syntax errors. Please fix the errors and try again.</span>, {
-            variant: 'default',
-            type: 'error',
-          });
-          return;
-        }*/
-
-        await updateFunction({
+    if (model) {
+      updateFunction(
+        {
           moduleId,
           versionId,
           functionId: fileMap[activeFile].functionId,
           fn: { code: model.getValue() },
-        });
+        },
+        {
+          onSuccess: () => {
+            // the new model version is now the one saved in the database
+            // so undoing to the first state is not equal to the saved state
+            setModelVersionId(model.getAlternativeVersionId());
 
-        // the new model version is now the one saved in the database
-        // so undoing to the first state is not equal to the saved state
-        setModelVersionId(model.getAlternativeVersionId());
-
-        setDirtyFiles((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(activeFile);
-          return newSet;
-        });
-      }
-    } catch {
-      enqueueSnackbar('Something went wrong while saving the file', { variant: 'default', type: 'error' });
+            setDirtyFiles((prev) => {
+              const newSet = new Set(prev);
+              newSet.delete(activeFile);
+              return newSet;
+            });
+          },
+          onError: () => {
+            enqueueSnackbar('Something went wrong while saving the file', { variant: 'default', type: 'error' });
+          },
+        },
+      );
     }
   };
 

@@ -27,14 +27,14 @@ export const Route = createFileRoute('/_auth/gameserver/$gameServerId/shop/listi
   pendingComponent: DrawerSkeleton,
 });
 
-const MAX_FILE_SIZE = 2500000; // 25MB
+const MAX_FILE_SIZE = 2_500_000; // 2.5MB
 const ACCEPTED_IMAGE_TYPES = ['application/json'];
 const validationSchema = z.object({
   replace: z.boolean().optional(),
   shopListings: z
     .any()
     .refine((files) => files?.length == 1, 'File is required.')
-    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, 'Max file size is 5MB.')
+    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, 'Max file size is 2.5MB.')
     .refine((files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type), 'Only json files are accepted.'),
 });
 

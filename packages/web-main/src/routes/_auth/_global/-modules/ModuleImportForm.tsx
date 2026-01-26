@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { FileField, styled, Button, TextField, Drawer, CollapseList, FormError } from '@takaro/lib-components';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,23 +18,16 @@ export interface IFormInputs {
 
 interface ModuleFormProps {
   isLoading?: boolean;
-  isSuccess?: boolean;
   onSubmit: (data: IFormInputs) => void;
   error: string | string[] | null;
 }
 
-const MAX_FILE_SIZE = 5_000_000; // 50MB
+const MAX_FILE_SIZE = 5_000_000; // 5MB
 const ACCEPTED_FILE_TYPES = ['application/json'];
 
-export const ModuleImportForm: FC<ModuleFormProps> = ({ isSuccess = false, onSubmit, isLoading = false, error }) => {
+export const ModuleImportForm: FC<ModuleFormProps> = ({ onSubmit, isLoading = false, error }) => {
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!open) {
-      navigate({ to: '/modules' });
-    }
-  }, [open, navigate]);
 
   const { handleSubmit, control, formState } = useForm<IFormInputs>({
     mode: 'onChange',
@@ -44,25 +37,26 @@ export const ModuleImportForm: FC<ModuleFormProps> = ({ isSuccess = false, onSub
         importData: z
           .any()
           .refine((files) => files?.length == 1, 'Import data is required')
-          .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, 'Max file size is 50MB.')
+          .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, 'Max file size is 5MB.')
           .refine((files) => ACCEPTED_FILE_TYPES.includes(files?.[0]?.type), 'Only .json files are accepted.'),
         name: z.string(),
       }),
     ),
   });
 
-  useEffect(() => {
-    if (isSuccess) {
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (!isOpen) {
       navigate({ to: '/modules' });
     }
-  }, [isSuccess]);
+  };
 
   const submitHandler: SubmitHandler<IFormInputs> = ({ importData, name }) => {
     onSubmit({ importData: importData, name });
   };
 
   return (
-    <Drawer open={open} onOpenChange={setOpen} promptCloseConfirmation={formState.isDirty}>
+    <Drawer open={open} onOpenChange={handleOpenChange} promptCloseConfirmation={formState.isDirty}>
       <Drawer.Content>
         <Drawer.Heading>{'Import module'}</Drawer.Heading>
         <Drawer.Body>

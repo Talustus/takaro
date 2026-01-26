@@ -19,7 +19,7 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { hasPermission } from '../../../hooks/useHasPermission';
 import { modulesInfiniteQueryOptions, customModuleCountQueryOptions } from '../../../queries/module';
 import { userMeQueryOptions } from '../../../queries/user';
-import { globalGameServerSetingQueryOptions } from '../../../queries/setting';
+import { globalGameServerSettingQueryOptions } from '../../../queries/setting';
 import { getCurrentDomain } from '../../../util/getCurrentDomain';
 import { MaxUsage } from '../../../components/MaxUsage';
 import { AiOutlineImport as ImportModuleIcon, AiOutlinePlus as CreateModuleIcon } from 'react-icons/ai';
@@ -37,7 +37,7 @@ export const Route = createFileRoute('/_auth/_global/modules')({
   beforeLoad: async ({ context }) => {
     const session = await context.queryClient.ensureQueryData(userMeQueryOptions());
     const developerModeEnabled = await context.queryClient.ensureQueryData(
-      globalGameServerSetingQueryOptions('developerMode'),
+      globalGameServerSettingQueryOptions('developerMode'),
     );
 
     if (!hasPermission(session, [PERMISSIONS.ReadModules]) || developerModeEnabled.value === 'false') {

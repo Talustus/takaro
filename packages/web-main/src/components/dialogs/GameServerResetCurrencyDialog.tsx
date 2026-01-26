@@ -14,15 +14,11 @@ export const GameServerResetCurrencyDialog = ({
   ...dialogOptions
 }: GameServerResetCurrencyDialogProps) => {
   const [valid, setValid] = useState<boolean>(false);
-  const { mutate, isPending: isResetting, isSuccess, error } = useGameServerResetCurrency();
+  const { mutate, isPending: isResetting, error } = useGameServerResetCurrency();
 
   const handleOnReset = () => {
-    mutate({ gameServerId });
+    mutate({ gameServerId }, { onSuccess: () => dialogOptions.onOpenChange(false) });
   };
-
-  if (isSuccess) {
-    dialogOptions.onOpenChange(false);
-  }
 
   return (
     <Dialog {...dialogOptions}>

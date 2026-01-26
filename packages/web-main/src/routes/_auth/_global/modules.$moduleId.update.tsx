@@ -23,42 +23,44 @@ export const Route = createFileRoute('/_auth/_global/modules/$moduleId/update')(
 
 function Component() {
   const mod = Route.useLoaderData();
-  const { mutate, isSuccess, isPending: isSubmitting, error: formError } = useModuleUpdate();
+  const { mutate, isPending: isSubmitting, error: formError } = useModuleUpdate();
   const navigate = Route.useNavigate();
   const { view } = Route.useSearch();
+  const { moduleId } = Route.useParams();
   const { enqueueSnackbar } = useSnackbar();
-
-  if (isSuccess) {
-    navigate({ to: '/modules' });
-  }
 
   if (view === 'builder') {
     if (canRenderInBuilder(mod.latestVersion.configSchema, mod.latestVersion.uiSchema) === false) {
       enqueueSnackbar('This module cannot be edited in builder mode', { type: 'error', variant: 'default' });
-      throw navigate({
+      navigate({
         to: '/modules/$moduleId/update',
-        params: { moduleId: Route.useParams().moduleId },
+        params: { moduleId },
         search: { view: 'manual' },
         replace: true,
       });
+      // Prevent rendering while navigation is in progress
+      return null;
     }
   }
 
   const onSubmit = (fields: ModuleFormSubmitProps) => {
-    mutate({
-      id: mod.id,
-      moduleUpdate: {
-        name: fields.name,
-        author: fields.author,
-        supportedGames: fields.supportedGames,
-        latestVersion: {
-          description: fields.description,
-          configSchema: fields.schema, // this is already stringified
-          uiSchema: fields.uiSchema, // this is already stringified
-          permissions: fields.permissions,
+    mutate(
+      {
+        id: mod.id,
+        moduleUpdate: {
+          name: fields.name,
+          author: fields.author,
+          supportedGames: fields.supportedGames,
+          latestVersion: {
+            description: fields.description,
+            configSchema: fields.schema, // this is already stringified
+            uiSchema: fields.uiSchema, // this is already stringified
+            permissions: fields.permissions,
+          },
         },
       },
-    });
+      { onSuccess: () => navigate({ to: '/modules' }) },
+    );
   };
 
   return (

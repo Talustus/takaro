@@ -18,20 +18,23 @@ export const Route = createFileRoute('/_auth/_global/modules/create/import')({
 });
 
 function Component() {
-  const { mutate, isSuccess, error, isPending } = useModuleImport();
+  const { mutate, error, isPending } = useModuleImport();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-
-  if (isSuccess) {
-    navigate({ to: '/modules' });
-    enqueueSnackbar('Module imported!', { variant: 'default', type: 'success' });
-  }
 
   const onSubmit = async ({ importData, name }: IFormInputs) => {
     const data = importData[0];
     const text = await data.text();
     const json = JSON.parse(text);
-    mutate({ ...json, name });
+    mutate(
+      { ...json, name },
+      {
+        onSuccess: () => {
+          navigate({ to: '/modules' });
+          enqueueSnackbar('Module imported!', { variant: 'default', type: 'success' });
+        },
+      },
+    );
   };
 
   return <ModuleImportForm onSubmit={onSubmit} isLoading={isPending} error={error} />;

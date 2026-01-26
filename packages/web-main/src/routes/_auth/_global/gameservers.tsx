@@ -24,6 +24,7 @@ import {
   AiOutlineStop as ShutdownIcon,
   AiOutlineReload as ResetTokenIcon,
   AiOutlineDollarCircle as ResetCurrencyIcon,
+  AiOutlineIdcard as PlayersIcon,
 } from 'react-icons/ai';
 import { FC, MouseEvent, useRef, useState } from 'react';
 import { PermissionsGuard } from '../../../components/PermissionsGuard';
@@ -259,6 +260,14 @@ export const GameServerActions: FC<GameServerActionsProps> = ({ gameServerId, ga
                   navigate({ to: '/gameserver/$gameServerId/shop', params: { gameServerId } });
                 }}
                 label="go to shop"
+              />
+              <Dropdown.Menu.Item
+                icon={<PlayersIcon />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate({ to: '/gameserver/$gameServerId/dashboard/players', params: { gameServerId } });
+                }}
+                label="go to players"
               />
               <Dropdown.Menu.Item
                 icon={<SettingsIcon />}

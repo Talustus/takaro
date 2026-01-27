@@ -79,7 +79,7 @@
     "concurrently": "9.0.1",
     "convict": "6.2.4",
     "cookie-parser": "1.4.7",
-    "cors": "2.8.5",
+    "cors": "2.8.6",
     "croner": "8.1.2",
     "cronstrue": "2.51.0",
     "csv": "6.3.11",

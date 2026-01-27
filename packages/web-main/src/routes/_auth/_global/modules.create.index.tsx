@@ -20,26 +20,25 @@ export const Route = createFileRoute('/_auth/_global/modules/create/')({
 });
 
 function Component() {
-  const { mutate, isSuccess, error, isPending } = useModuleCreate();
+  const { mutate, error, isPending } = useModuleCreate();
   const navigate = useNavigate();
   const { view } = Route.useSearch();
 
-  if (isSuccess) {
-    navigate({ to: '/modules' });
-  }
-
-  const onSubmit = async (fields: ModuleFormSubmitProps) => {
-    mutate({
-      name: fields.name,
-      author: fields.author,
-      supportedGames: fields.supportedGames,
-      latestVersion: {
-        description: fields.description,
-        configSchema: fields.schema,
-        uiSchema: fields.uiSchema,
-        permissions: fields.permissions,
+  const onSubmit = (fields: ModuleFormSubmitProps) => {
+    mutate(
+      {
+        name: fields.name,
+        author: fields.author,
+        supportedGames: fields.supportedGames,
+        latestVersion: {
+          description: fields.description,
+          configSchema: fields.schema,
+          uiSchema: fields.uiSchema,
+          permissions: fields.permissions,
+        },
       },
-    });
+      { onSuccess: () => navigate({ to: '/modules' }) },
+    );
   };
 
   return (

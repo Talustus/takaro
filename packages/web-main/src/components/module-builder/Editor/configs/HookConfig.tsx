@@ -34,7 +34,7 @@ interface HookConfigFormProps {
 }
 
 export const HookConfigForm: FC<HookConfigFormProps> = ({ readOnly = false, hook, moduleId }) => {
-  const { mutateAsync, isPending } = useHookUpdate();
+  const { mutate, isPending } = useHookUpdate();
 
   const { control, handleSubmit, formState } = useForm<FormInputs>({
     mode: 'onSubmit',
@@ -46,8 +46,8 @@ export const HookConfigForm: FC<HookConfigFormProps> = ({ readOnly = false, hook
     },
   });
 
-  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    await mutateAsync({
+  const onSubmit: SubmitHandler<FormInputs> = (data) => {
+    mutate({
       hookId: hook.id,
       hook: data as HookUpdateDTO,
       moduleId,

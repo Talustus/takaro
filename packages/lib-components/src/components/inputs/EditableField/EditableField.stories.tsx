@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from '../../../styled';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { EditableFieldProps, EditableField } from '.';
 import { z } from 'zod';
 

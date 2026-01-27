@@ -31,7 +31,7 @@ export const Route = createFileRoute('/_auth/_global/player/$playerId/role/assig
 
 function Component() {
   const [open, setOpen] = useState(true);
-  const { mutateAsync, isPending, error } = usePlayerRoleAssign();
+  const { mutate, isPending, error } = usePlayerRoleAssign();
   const navigate = useNavigate();
   const { playerId } = Route.useParams();
 
@@ -49,10 +49,12 @@ function Component() {
     },
   });
 
-  const onSubmit: SubmitHandler<IFormInputs> = async ({ playerId, roleId, gameServerId, expiresAt }) => {
+  const onSubmit: SubmitHandler<IFormInputs> = ({ playerId, roleId, gameServerId, expiresAt }) => {
     if (gameServerId === 'null') gameServerId = undefined;
-    await mutateAsync({ playerId, roleId, gameServerId, expiresAt });
-    navigate({ to: '/player/$playerId/info', params: { playerId } });
+    mutate(
+      { playerId, roleId, gameServerId, expiresAt },
+      { onSuccess: () => navigate({ to: '/player/$playerId/info', params: { playerId } }) },
+    );
   };
 
   return (

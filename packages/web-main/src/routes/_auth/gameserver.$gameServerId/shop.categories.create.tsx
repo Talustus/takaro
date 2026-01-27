@@ -21,23 +21,25 @@ export const Route = createFileRoute('/_auth/gameserver/$gameServerId/shop/categ
 
 function Component() {
   const { gameServerId } = Route.useParams();
-  const { mutate: createCategory, isSuccess, isPending } = useShopCategoryCreate();
+  const { mutate: createCategory, isPending, error } = useShopCategoryCreate();
   const navigate = Route.useNavigate();
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    createCategory({
-      name: data.name,
-      emoji: data.emoji,
-      parentId: data.parentId ?? undefined,
-    });
+  const onSubmit: SubmitHandler<FormFields> = (data) => {
+    createCategory(
+      {
+        name: data.name,
+        emoji: data.emoji,
+        parentId: data.parentId ?? undefined,
+      },
+      {
+        onSuccess: () =>
+          navigate({
+            to: '/gameserver/$gameServerId/shop/categories',
+            params: { gameServerId },
+          }),
+      },
+    );
   };
 
-  if (isSuccess) {
-    navigate({
-      to: '/gameserver/$gameServerId/shop/categories',
-      params: { gameServerId },
-    });
-  }
-
-  return <CategoryForm gameServerId={gameServerId} onSubmit={onSubmit} isPending={isPending} />;
+  return <CategoryForm gameServerId={gameServerId} onSubmit={onSubmit} isPending={isPending} error={error} />;
 }

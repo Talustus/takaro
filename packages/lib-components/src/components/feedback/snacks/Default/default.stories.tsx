@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { useSnackbar } from 'notistack';
 import { styled } from '../../../../styled';
-import { Button } from '../../../../components';
+import { Button } from '../../../actions/Button';
 import { DefaultSnackProps } from '.';
 
 const Wrapper = styled.div`

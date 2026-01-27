@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { styled } from '../../../styled';
 import { Button, ButtonProps } from '.';
 import { AiFillCloud as Icon } from 'react-icons/ai';

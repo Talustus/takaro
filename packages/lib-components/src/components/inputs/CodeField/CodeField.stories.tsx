@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
-import { CodeField, CodeFieldProps } from '../../../components';
+import { Meta, StoryFn } from '@storybook/react-vite';
+import { CodeField, CodeFieldProps } from '../CodeField';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Button } from '../../actions';
+import { Button } from '../../actions/Button';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 

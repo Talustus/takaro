@@ -13,20 +13,17 @@ export const RoleDeleteDialog = forwardRef<DeleteImperativeHandle, RoleDeleteDia
   ref,
 ) {
   const [valid, setValid] = useState<boolean>(false);
-  const { mutate, isPending: isDeleting, isSuccess, error } = useRoleRemove();
+  const { mutate, isPending: isDeleting, error } = useRoleRemove();
+  const onSuccessRoleRemove = () => dialogOptions.onOpenChange(false);
 
   useImperativeHandle(ref, () => ({
-    triggerDelete: () => mutate({ roleId }),
+    triggerDelete: () => mutate({ roleId }, { onSuccess: onSuccessRoleRemove }),
   }));
 
   const handleOnDelete = (e: MouseEvent) => {
     e.stopPropagation();
-    mutate({ roleId });
+    mutate({ roleId }, { onSuccess: onSuccessRoleRemove });
   };
-
-  if (isSuccess) {
-    dialogOptions.onOpenChange(false);
-  }
 
   return (
     <Dialog {...dialogOptions}>

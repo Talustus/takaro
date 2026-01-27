@@ -72,9 +72,9 @@ export const useRoleCreate = () => {
   return mutationWrapper<RoleOutputDTO, RoleCreateInputDTO>(
     useMutation<RoleOutputDTO, AxiosError<RoleOutputArrayDTOAPI>, RoleCreateInputDTO>({
       mutationFn: async (role) => (await apiClient.role.roleControllerCreate(role)).data.data,
-      onSuccess: (newRole) => {
+      onSuccess: async (newRole) => {
         enqueueSnackbar('Role created!', { variant: 'default', type: 'success' });
-        queryClient.invalidateQueries({ queryKey: roleKeys.list() });
+        await queryClient.invalidateQueries({ queryKey: roleKeys.list() });
         queryClient.setQueryData(roleKeys.detail(newRole.id), newRole);
       },
     }),
@@ -156,10 +156,9 @@ export const useUserRoleRemove = () => {
   const queryClient = useQueryClient();
   return mutationWrapper<APIOutput, IUserRoleAssign>(
     useMutation<APIOutput, AxiosError<APIOutput>, IUserRoleAssign>({
-      mutationFn: async ({ id, roleId }) => {
-        const res = (await apiClient.user.userControllerRemoveRole(id, roleId)).data;
+      mutationFn: async ({ id, roleId }) => (await apiClient.user.userControllerRemoveRole(id, roleId)).data,
+      onSuccess: (_, { id }) => {
         queryClient.invalidateQueries({ queryKey: userKeys.detail(id) });
-        return res;
       },
     }),
     {},

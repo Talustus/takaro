@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ThemeProvider as OryThemeProvider, IntlProvider as OryIntlProvider } from '@ory/elements';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { GlobalStyle, SnackbarProvider, ThemeProvider } from '@takaro/lib-components';
 import { oryThemeOverrides } from './OryThemeOverrides';
@@ -23,7 +23,8 @@ declare module '@tanstack/react-router' {
 
 function InnerApp() {
   const auth = useAuth();
-  return <RouterProvider router={router} context={{ auth }} />;
+  const queryClient = useQueryClient();
+  return <RouterProvider router={router} context={{ auth, queryClient }} />;
 }
 
 export function App() {

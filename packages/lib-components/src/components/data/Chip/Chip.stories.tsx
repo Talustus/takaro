@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn, StoryObj } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react-vite';
 import { styled } from '../../../styled';
 import { AiOutlineArrowRight as LinkIcon } from 'react-icons/ai';
 import { Chip, ChipProps } from '../../data';

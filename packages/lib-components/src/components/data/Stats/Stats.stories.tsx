@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { Stats, StatsProps } from '../../../components';
 import { AiOutlineDollar, AiOutlineUser, AiOutlineShoppingCart, AiOutlineEye } from 'react-icons/ai';
 

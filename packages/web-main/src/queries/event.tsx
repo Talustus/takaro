@@ -4,6 +4,7 @@ import {
   infiniteQueryOptions,
   keepPreviousData,
   queryOptions,
+  useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -202,4 +203,10 @@ export const exportEventsToCsv = async (queryParams: EventSearchInputDTO) => {
   // Clean up
   document.body.removeChild(a);
   window.URL.revokeObjectURL(url);
+};
+
+export const useExportEventsToCsv = () => {
+  return useMutation({
+    mutationFn: exportEventsToCsv,
+  });
 };

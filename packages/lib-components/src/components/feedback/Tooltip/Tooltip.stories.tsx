@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
-import { Tooltip, TooltipProps } from '.';
-import { Button, IconButton } from '../../actions';
+import { Meta, StoryFn } from '@storybook/react-vite';
+import { Tooltip, TooltipProps } from '../Tooltip';
+import { Button } from '../../actions/Button';
+import { IconButton } from '../../actions/IconButton';
 import { AiOutlineWoman as Icon } from 'react-icons/ai';
 
 interface ExtraTooltipStoryProps {

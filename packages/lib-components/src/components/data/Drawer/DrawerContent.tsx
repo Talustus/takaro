@@ -1,6 +1,7 @@
 import { forwardRef, HTMLProps, useState } from 'react';
 import { styled } from '../../../styled';
 import { Button } from '../../../components';
+import { useTheme } from '../../../hooks/';
 import { AnimatePresence, motion, PanInfo } from 'framer-motion';
 import SimpleBar from 'simplebar-react';
 
@@ -79,6 +80,7 @@ export const DrawerContent = forwardRef<HTMLElement, HTMLProps<HTMLDivElement>>(
     showConfirmDialog,
     setShowConfirmDialog,
   } = useDrawerContext();
+  const theme = useTheme();
 
   const ref = useMergeRefs([context.refs.setFloating, propRef]);
   const [dragPosition, setDragPosition] = useState<number>(0);
@@ -115,6 +117,7 @@ export const DrawerContent = forwardRef<HTMLElement, HTMLProps<HTMLDivElement>>(
               overflow: 'hidden!important',
               display: 'grid',
               background: `rgba(0, 0, 0, ${Math.max(0.8 - dragPosition, 0.4)})`,
+              zIndex: theme.zIndex.drawer,
             }}
           >
             <FloatingFocusManager context={context}>

@@ -1,7 +1,10 @@
 import React from 'react';
-import { DurationField, DurationFieldProps } from '../../../components';
+import {
+  ControlledDurationField as DurationField,
+  ControlledDurationFieldProps as DurationFieldProps,
+} from './Controlled';
 import { z } from 'zod';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-vite';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 

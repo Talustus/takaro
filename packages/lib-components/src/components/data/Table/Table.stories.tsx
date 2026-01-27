@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 
 import { Table, TableProps } from '.';
 import { createColumnHelper } from '@tanstack/react-table';

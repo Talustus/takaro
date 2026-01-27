@@ -17,23 +17,27 @@ export const Route = createFileRoute('/_auth/_global/roles')({
     }
   },
   component: Component,
-  notFoundComponent: () => {
-    return (
-      <EmptyPage>
-        <Empty
-          header="No roles"
-          description="Create a role and assign it to user or players."
-          actions={[
-            <Button key="create-role-button" onClick={() => redirect({ to: '/roles/create' })}>
-              Create a role
-            </Button>,
-          ]}
-        />
-        <Outlet />
-      </EmptyPage>
-    );
-  },
+  notFoundComponent: NotFoundComponent,
 });
+
+function NotFoundComponent() {
+  const navigate = useNavigate();
+
+  return (
+    <EmptyPage>
+      <Empty
+        header="No roles"
+        description="Create a role and assign it to user or players."
+        actions={[
+          <Button key="create-role-button" onClick={() => navigate({ to: '/roles/create' })}>
+            Create a role
+          </Button>,
+        ]}
+      />
+      <Outlet />
+    </EmptyPage>
+  );
+}
 
 function Component() {
   useDocumentTitle('Roles');

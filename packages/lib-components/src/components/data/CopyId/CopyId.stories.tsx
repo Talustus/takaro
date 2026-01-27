@@ -1,7 +1,6 @@
-import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn, StoryObj } from '@storybook/react-vite';
 import { styled } from '../../../styled';
-import { CopyId, CopyIdProps } from '../../../components';
+import { CopyId, CopyIdProps } from '../CopyId';
 
 const Wrapper = styled.div`
   display: flex;

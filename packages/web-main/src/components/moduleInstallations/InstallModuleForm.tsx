@@ -3,7 +3,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Button, Drawer, CollapseList, styled, FormError, Chip } from '@takaro/lib-components';
 import { useGameServerModuleInstall } from '../../queries/gameserver';
 import Form from '@rjsf/core';
-import { JsonSchemaForm } from '../../components/JsonSchemaForm';
+import { JsonSchemaForm } from '../JsonSchemaForm';
 import { ModuleInstallationOutputDTO, ModuleOutputDTO, ModuleVersionOutputDTO } from '@takaro/apiclient';
 
 interface InstallModuleFormProps {
@@ -32,7 +32,7 @@ export const InstallModuleForm: FC<InstallModuleFormProps> = ({
   const [systemConfigSubmitted, setSystemConfigSubmitted] = useState<boolean>(false);
   const [isDirty, setisDirty] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { mutate, isPending, error, isSuccess } = useGameServerModuleInstall();
+  const { mutate, isPending, error } = useGameServerModuleInstall();
 
   const [userConfig, setUserConfig] = useState<Record<string, unknown>>({});
   const [systemConfig, setSystemConfig] = useState<Record<string, unknown>>({});
@@ -58,20 +58,17 @@ export const InstallModuleForm: FC<InstallModuleFormProps> = ({
     }
   }, [open, navigate, gameServerId]);
 
-  const onSubmit = useCallback(async () => {
-    mutate({
-      gameServerId: gameServerId,
-      versionId: modVersion.id,
-      userConfig: JSON.stringify(userConfig),
-      systemConfig: JSON.stringify(systemConfig),
-    });
-  }, [mod.id, navigate, gameServerId, systemConfig, userConfig]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      navigate({ to: '/gameserver/$gameServerId/modules', params: { gameServerId } });
-    }
-  }, [isSuccess]);
+  const onSubmit = useCallback(() => {
+    mutate(
+      {
+        gameServerId: gameServerId,
+        versionId: modVersion.id,
+        userConfig: JSON.stringify(userConfig),
+        systemConfig: JSON.stringify(systemConfig),
+      },
+      { onSuccess: () => navigate({ to: '/gameserver/$gameServerId/modules', params: { gameServerId } }) },
+    );
+  }, [mod.id, navigate, gameServerId, systemConfig, userConfig, modVersion.id]);
 
   useEffect(() => {
     if (userConfig && systemConfig && userConfigSubmitted && systemConfigSubmitted) {
@@ -81,11 +78,21 @@ export const InstallModuleForm: FC<InstallModuleFormProps> = ({
     }
   }, [userConfigSubmitted, systemConfigSubmitted, userConfig, systemConfig]);
 
+  const getText = () => {
+    if (readOnly) {
+      return 'View module configuration';
+    } else if (modInstallation) {
+      return 'Update module';
+    } else {
+      return 'Install module';
+    }
+  };
+
   return (
     <Drawer open={open} onOpenChange={setOpen} promptCloseConfirmation={readOnly === false && isDirty}>
       <Drawer.Content>
         <Drawer.Heading>
-          <span style={{ marginRight: '10px' }}>{readOnly ? 'View configuration' : 'Install module'}</span>
+          <span style={{ marginRight: '10px' }}>{getText()}</span>
           <Chip color="primary" label={modVersion.tag} />
         </Drawer.Heading>
         <Drawer.Body>
@@ -140,7 +147,7 @@ export const InstallModuleForm: FC<InstallModuleFormProps> = ({
                   userConfigFormRef.current?.formElement.current.requestSubmit();
                 }}
               >
-                Install module
+                {getText()}
               </Button>
             </ButtonContainer>
           )}

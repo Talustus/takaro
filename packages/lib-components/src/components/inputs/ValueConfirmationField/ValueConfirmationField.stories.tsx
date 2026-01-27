@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
-import { Button, Dialog, ValueConfirmationField, ValueConfirmationFieldProps } from '../../../components';
+import { Meta, StoryFn } from '@storybook/react-vite';
+import { ValueConfirmationField, ValueConfirmationFieldProps } from '../ValueConfirmationField';
+import { Button } from '../../actions/Button';
+import { Dialog } from '../../dialogs/Dialog';
 
 export default {
   title: 'Inputs/ValueConfirmationField',

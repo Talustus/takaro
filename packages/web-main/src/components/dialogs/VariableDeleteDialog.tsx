@@ -19,15 +19,11 @@ export const VariableDeleteDialog: FC<VariableDeleteProps> = ({
   playerName,
   ...dialogOptions
 }) => {
-  const { mutate, isPending, isSuccess, error } = useVariableDelete();
+  const { mutate, isPending, error } = useVariableDelete();
 
-  if (isSuccess) {
-    dialogOptions.onOpenChange(false);
-  }
-
-  const handleOnDelete = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleOnDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    mutate({ variableId });
+    mutate({ variableId }, { onSuccess: () => dialogOptions.onOpenChange(false) });
   };
 
   return (

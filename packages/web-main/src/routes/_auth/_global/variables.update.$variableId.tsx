@@ -3,7 +3,6 @@ import { createFileRoute, notFound, redirect, useNavigate } from '@tanstack/reac
 import { useVariableUpdate, variableQueryOptions } from '../../../queries/variable';
 import { VariablesForm, IFormInputs } from '../../../components/variables/VariablesForm';
 import { useSnackbar } from 'notistack';
-import { queryClient } from '../../../queryClient';
 import { hasPermission } from '../../../hooks/useHasPermission';
 import { VariableUpdateDTO } from '@takaro/apiclient';
 import { userMeQueryOptions } from '../../../queries/user';
@@ -16,8 +15,8 @@ export const Route = createFileRoute('/_auth/_global/variables/update/$variableI
       throw redirect({ to: '/forbidden' });
     }
   },
-  loader: async ({ params }) => {
-    const variable = await queryClient.ensureQueryData(variableQueryOptions(params.variableId));
+  loader: async ({ params, context }) => {
+    const variable = await context.queryClient.ensureQueryData(variableQueryOptions(params.variableId));
     return { variable };
   },
   component: Component,
@@ -29,17 +28,13 @@ function Component() {
   const loaderData = Route.useLoaderData();
   const { variableId } = Route.useParams();
   const { enqueueSnackbar } = useSnackbar();
-  const { mutate, isPending, isSuccess } = useVariableUpdate();
+  const { mutate, isPending } = useVariableUpdate();
 
   const { data } = useQuery({ ...variableQueryOptions(variableId), initialData: loaderData.variable });
 
   if (!data) {
     enqueueSnackbar('Variable not found', { type: 'error' });
     throw notFound();
-  }
-
-  if (isSuccess) {
-    navigate({ to: '/variables' });
   }
 
   function updateVariable(variable: IFormInputs) {
@@ -50,7 +45,10 @@ function Component() {
       ...variable,
       expiresAt: variable.expiresAt,
     };
-    mutate({ variableId: data.id, variableDetails: updatedVariable });
+    mutate(
+      { variableId: data.id, variableDetails: updatedVariable },
+      { onSuccess: () => navigate({ to: '/variables' }) },
+    );
   }
 
   // set null values to undefined otherwise zod will complain

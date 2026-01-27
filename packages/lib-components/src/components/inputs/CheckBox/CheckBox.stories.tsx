@@ -1,7 +1,8 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { styled } from '../../../styled';
-import { CheckBox, CheckBoxProps, Button } from '../../../components';
+import { ControlledCheckBox as CheckBox, ControlledCheckBoxProps as CheckBoxProps } from './Controlled';
+import { Button } from '../../actions/Button';
 import { SubmitHandler, useForm, useWatch } from 'react-hook-form';
 
 const Wrapper = styled.div`

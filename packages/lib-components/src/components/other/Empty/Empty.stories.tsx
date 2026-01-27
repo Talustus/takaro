@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { Empty, EmptyPage, EmptyProps } from '.';
 import { Button } from '../../../components';
 import { AiOutlinePlus as AddIcon } from 'react-icons/ai';

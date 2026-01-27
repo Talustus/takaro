@@ -6,8 +6,8 @@
     "dnd-core": "16.0.1"
   },
   "devDependencies": {
-    "@storybook/react": "10.0.6",
-    "vitest": "4.0.16"
+    "@storybook/react-vite": "10.0.6",
+    "vitest": "4.0.18"
   },
   "license": "AGPL-3.0-or-later",
   "main": "src/index.ts",

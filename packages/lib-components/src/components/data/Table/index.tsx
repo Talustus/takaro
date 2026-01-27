@@ -440,7 +440,7 @@ export function Table<DataType extends object>({
                 ))}
             </tbody>
 
-            {!isLoading && table.getPageCount() * table.getRowCount() > MINIMUM_ROW_COUNT_FOR_PAGINATION && (
+            {!isLoading && pagination && pagination.pageOptions.total > MINIMUM_ROW_COUNT_FOR_PAGINATION && (
               <tfoot>
                 <tr>
                   {/* This is the row selection */}

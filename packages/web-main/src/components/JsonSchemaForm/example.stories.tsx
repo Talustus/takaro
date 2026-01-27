@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { StoryFn } from '@storybook/react';
+import { StoryFn } from '@storybook/react-vite';
 import { RJSFSchema } from '@rjsf/utils';
 import Form from '@rjsf/core';
 import { JsonSchemaForm } from './index';

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { styled } from '../../../../styled';
 import { useStepper } from '../useStepper';
-import { Button, SlimStepper, SlimStepperProps } from '../../../../components';
+import { SlimStepper, SlimStepperProps } from '../SlimStepper';
+import { Button } from '../../../actions/Button';
 
 export default {
   /** useStepper requires a context provider which is (currently) mounted on the root of the application.

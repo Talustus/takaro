@@ -27,7 +27,7 @@ test.describe('Module installations', () => {
 
     await moduleInstallationsPage.goto();
     await moduleInstallationsPage.viewConfig('highPingKicker');
-    await expect(page.getByText('View configuration')).toBeVisible();
+    await expect(page.getByText('View module configuration')).toBeVisible();
   });
 });
 

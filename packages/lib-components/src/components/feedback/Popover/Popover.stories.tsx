@@ -1,7 +1,7 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
-import { Popover, PopoverProps } from '.';
-import { IconButton } from '../../actions';
+import { Meta, StoryFn } from '@storybook/react-vite';
+import { Popover, PopoverProps } from '../Popover';
+import { IconButton } from '../../actions/IconButton';
 import { AiFillBug as BugIcon } from 'react-icons/ai';
 
 export default {

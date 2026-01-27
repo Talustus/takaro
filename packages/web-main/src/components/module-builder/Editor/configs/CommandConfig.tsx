@@ -19,7 +19,7 @@ import {
 } from 'react-icons/ai';
 
 import { ArgumentCard, ArgumentList, Column, ContentContainer, Fields, Flex } from './style';
-import { globalGameServerSetingQueryOptions } from '../../../../queries/setting';
+import { globalGameServerSettingQueryOptions } from '../../../../queries/setting';
 import { commandQueryOptions, useCommandUpdate, moduleVersionQueryOptions } from '../../../../queries/module';
 import { permissionsQueryOptions } from '../../../../queries/role';
 import { FC } from 'react';
@@ -79,7 +79,9 @@ interface CommandConfigProps {
 
 export const CommandConfig: FC<CommandConfigProps> = ({ itemId, readOnly, moduleId }) => {
   const { data: command, isPending: isLoadingCommand, isError } = useQuery(commandQueryOptions(itemId));
-  const { data: settings, isPending: isLoadingSetting } = useQuery(globalGameServerSetingQueryOptions('commandPrefix'));
+  const { data: settings, isPending: isLoadingSetting } = useQuery(
+    globalGameServerSettingQueryOptions('commandPrefix'),
+  );
 
   if (isLoadingCommand || isLoadingSetting) {
     return <ConfigLoading />;
@@ -103,7 +105,7 @@ interface CommandConfigFormProps {
 }
 
 export const CommandConfigForm: FC<CommandConfigFormProps> = ({ command, readOnly, commandPrefix, moduleId }) => {
-  const { mutateAsync, error, isPending } = useCommandUpdate();
+  const { mutate, error, isPending } = useCommandUpdate();
   const { data: moduleVersion } = useQuery(moduleVersionQueryOptions(command.versionId));
   const { data: allPermissions } = useQuery(permissionsQueryOptions());
 
@@ -155,7 +157,7 @@ export const CommandConfigForm: FC<CommandConfigFormProps> = ({ command, readOnl
     name: 'arguments',
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof validationSchema>> = async (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof validationSchema>> = (data) => {
     const commandData = {
       ...data,
       requiredPermissions: data.requiredPermissions || [],
@@ -168,13 +170,15 @@ export const CommandConfigForm: FC<CommandConfigFormProps> = ({ command, readOnl
       })),
     };
 
-    await mutateAsync({
-      commandId: command.id,
-      command: commandData,
-      versionId: command.versionId,
-      moduleId: moduleId,
-    });
-    reset({}, { keepValues: true });
+    mutate(
+      {
+        commandId: command.id,
+        command: commandData,
+        versionId: command.versionId,
+        moduleId: moduleId,
+      },
+      { onSuccess: () => reset({}, { keepValues: true }) },
+    );
   };
 
   return (

@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { styled, TextField, Button, SelectField, Drawer, CollapseList } from '@takaro/lib-components';
+import { styled, TextField, Button, SelectField, Drawer, CollapseList, FormError } from '@takaro/lib-components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -79,22 +79,17 @@ interface CategoryFormProps {
   initialData?: ShopCategoryOutputDTO;
   onSubmit: SubmitHandler<FormFields>;
   isPending: boolean;
+  error: string | string[] | null;
 }
 
-export const CategoryForm: FC<CategoryFormProps> = ({ gameServerId, initialData, onSubmit, isPending }) => {
+export const CategoryForm: FC<CategoryFormProps> = ({ gameServerId, initialData, onSubmit, isPending, error }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
 
   const isEdit = Boolean(initialData);
   const { data: categoriesData } = useShopCategories();
 
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors: _errors },
-  } = useForm<FormFields>({
+  const { control, handleSubmit, setValue, watch } = useForm<FormFields>({
     resolver: zodResolver(validationSchema),
     defaultValues: {
       name: '',
@@ -217,6 +212,7 @@ export const CategoryForm: FC<CategoryFormProps> = ({ gameServerId, initialData,
                 </SelectField>
               </CollapseList.Item>
             </CollapseList>
+            {error && <FormError error={error} />}
           </form>
         </Drawer.Body>
         <Drawer.Footer>

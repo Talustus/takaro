@@ -1,7 +1,7 @@
 {
   "name": "@takaro/config",
   "description": "An opinionated config handler",
-  "version": "0.4.12",
+  "version": "0.4.13",
   "author": "",
   "dependencies": {
     "convict": "6.2.4"

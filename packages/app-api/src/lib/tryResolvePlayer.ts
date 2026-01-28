@@ -47,7 +47,7 @@ export async function tryResolvePlayer(
     .flat();
 
   if (onlineOnly) {
-    filteredByGameServer = filteredByGameServer.filter((pog) => pog.online === true);
+    filteredByGameServer = filteredByGameServer.filter((pog) => pog !== null && pog.online === true);
   }
 
   if (filteredByGameServer.length === 0) {

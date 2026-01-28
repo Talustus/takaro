@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
-import { Console as ConsoleComponent } from '../Console';
+import { Meta, StoryFn } from '@storybook/react-vite';
+import { Console as ConsoleComponent } from './Console';
 import { Message, MessageType } from './MessageModel';
 
 export default {

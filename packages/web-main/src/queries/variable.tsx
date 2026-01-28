@@ -41,7 +41,7 @@ export const variableQueryOptions = (variableId: string) =>
 
 export const variablesQueryOptions = (queryParams: VariableSearchInputDTO) =>
   queryOptions<VariableOutputArrayDTOAPI, AxiosError<VariableOutputArrayDTOAPI>>({
-    queryKey: [...variableKeys.list(), queryParams],
+    queryKey: [...variableKeys.list(), ...queryParamsToArray(queryParams)],
     queryFn: async () => (await getApiClient().variable.variableControllerSearch(queryParams)).data,
   });
 

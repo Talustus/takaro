@@ -68,7 +68,7 @@ interface IUserRolesTableProps {
 
 const UserRolesTable: FC<IUserRolesTableProps> = ({ roles, userId }) => {
   const { pagination, columnFilters, sorting, columnSearch } = useTableActions<UserAssignmentOutputDTO>();
-  const { mutate } = useUserRemoveRole({ userId });
+  const { mutate } = useUserRemoveRole();
   const navigate = useNavigate();
 
   const handleOnEditRoleClick = (e: MouseEvent, roleId: string) => {

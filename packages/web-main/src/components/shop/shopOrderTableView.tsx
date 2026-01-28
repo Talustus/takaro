@@ -211,7 +211,7 @@ const ShopOrderActions: FC<ShopOrderActionsProps> = ({ shopOrder, gameServerId, 
   const [openCancelOrderDialog, setOpenCancelOrderDialog] = useState(false);
   const { mutate: cancelShopOrder, isPending: isPendingShopOrderCancel } = useShopOrderCancel();
   const { data: pog } = useQuery(playerOnGameServerQueryOptions(gameServerId, playerId));
-  const { mutateAsync: claimShopOrder } = useShopOrderClaim();
+  const { mutate: claimShopOrder } = useShopOrderClaim();
   const theme = useTheme();
   const navigate = useNavigate();
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { useState } from 'react';
 import { ProgressBar, ProgressBarProps } from '.';
 import { styled } from '../../../styled';

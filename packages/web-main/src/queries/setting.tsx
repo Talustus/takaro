@@ -35,7 +35,7 @@ export const gameServerSettingsQueryOptions = (gameServerId: string, keys?: Sett
   });
 };
 
-export const globalGameServerSetingQueryOptions = (key: SettingsOutputDTOKeyEnum) => {
+export const globalGameServerSettingQueryOptions = (key: SettingsOutputDTOKeyEnum) => {
   const apiClient = getApiClient();
   return queryOptions<SettingsOutputDTO, AxiosError<SettingsOutputDTOAPI>>({
     queryKey: settingKeys.globalDetail(key),

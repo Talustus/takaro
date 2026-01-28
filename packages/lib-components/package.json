@@ -1,13 +1,13 @@
 {
   "name": "@takaro/lib-components",
   "description": "Takaro UI is a simple and customizable component library to build React apps faster within the Takaro eco system",
-  "version": "0.4.11",
+  "version": "0.4.13",
   "dependencies": {
     "dnd-core": "16.0.1"
   },
   "devDependencies": {
-    "@storybook/react": "10.0.6",
-    "vitest": "4.0.16"
+    "@storybook/react-vite": "10.0.6",
+    "vitest": "4.0.18"
   },
   "license": "AGPL-3.0-or-later",
   "main": "src/index.ts",

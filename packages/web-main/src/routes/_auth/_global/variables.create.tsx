@@ -16,12 +16,8 @@ export const Route = createFileRoute('/_auth/_global/variables/create')({
 });
 
 function Component() {
-  const { mutate, isPending, error, isSuccess } = useVariableCreate();
+  const { mutate, isPending, error } = useVariableCreate();
   const navigate = useNavigate();
-
-  if (isSuccess) {
-    navigate({ to: '/variables' });
-  }
 
   function createVariable(variable: IFormInputs) {
     if (variable.expiresAt === null) {
@@ -31,7 +27,7 @@ function Component() {
       ...variable,
       expiresAt: variable.expiresAt,
     };
-    mutate(createdVariable);
+    mutate(createdVariable, { onSuccess: () => navigate({ to: '/variables' }) });
   }
 
   return <VariablesForm isLoading={isPending} onSubmit={createVariable} error={error} />;

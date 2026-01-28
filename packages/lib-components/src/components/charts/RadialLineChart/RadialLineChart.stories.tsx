@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import appleStock, { AppleStock } from '@visx/mock-data/lib/mocks/appleStock';
 import { RadialLineChart, RadialLineChartProps } from '.';
 import { styled } from '../../../styled';

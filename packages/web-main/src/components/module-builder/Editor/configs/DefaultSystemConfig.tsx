@@ -19,7 +19,7 @@ export const SystemConfig: FC<SystemConfigProps> = ({ moduleId, versionId, readO
   } = useQuery(moduleVersionQueryOptions(versionId));
 
   const systemConfigFormRef = useRef(null);
-  const { mutateAsync, error } = useModuleUpdate();
+  const { mutate, error } = useModuleUpdate();
 
   if (isLoadingVersion) {
     return <ConfigLoading />;
@@ -32,16 +32,11 @@ export const SystemConfig: FC<SystemConfigProps> = ({ moduleId, versionId, readO
   // Get system config from installation or version default
   const systemConfig = modVersion?.defaultSystemConfig || {};
 
-  const onSystemConfigSubmit = async (data: any) => {
-    console.log(data);
-    try {
-      await mutateAsync({
-        id: moduleId,
-        moduleUpdate: { latestVersion: { defaultSystemConfig: JSON.stringify(data.formData) } },
-      });
-    } catch (err) {
-      console.error('Failed to update system config', err);
-    }
+  const onSystemConfigSubmit = (data: any) => {
+    mutate({
+      id: moduleId,
+      moduleUpdate: { latestVersion: { defaultSystemConfig: JSON.stringify(data.formData) } },
+    });
   };
 
   return (

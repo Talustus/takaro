@@ -106,21 +106,6 @@ function Component() {
     [oryClient],
   );
 
-  useEffect(() => {
-    if (loginFlow) {
-      const csrfAttr = loginFlow.ui.nodes[0].attributes;
-      // @ts-expect-error Bad ory client types :(
-      setCsrfToken(csrfAttr.value);
-    } else {
-      createLoginFlow().then((flow) => {
-        setLoginFlow(flow);
-        const csrfAttr = flow.ui.nodes[0].attributes;
-        // @ts-expect-error Bad ory client types :(
-        setCsrfToken(csrfAttr.value);
-      });
-    }
-  }, [loginFlow]);
-
   const handleOryError = oryError(getFlow, setLoginFlow, '/login');
 
   async function logIn(flow: string, email: string, password: string, csrf_token: string): Promise<void> {

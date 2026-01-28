@@ -20,7 +20,6 @@ import {
 import { AxiosError } from 'axios';
 import { getNextPage, mutationWrapper, queryParamsToArray } from '../queries/util';
 import { useSnackbar } from 'notistack';
-import { queryClient } from '../queryClient';
 import { useNavigate } from '@tanstack/react-router';
 
 export const playerKeys = {
@@ -113,6 +112,7 @@ export const playerBansQueryOptions = (queryParams: BanSearchInputDTO = {}) =>
 
 export const useBanPlayer = () => {
   const apiClient = getApiClient();
+  const queryClient = useQueryClient();
 
   return mutationWrapper<BanOutputDTO, BanCreateDTO>(
     useMutation<BanOutputDTO, AxiosError<BanOutputDTO>, BanCreateDTO>({
@@ -132,6 +132,7 @@ interface UnbanPlayerInput {
 
 export const useUnbanPlayer = () => {
   const apiClient = getApiClient();
+  const queryClient = useQueryClient();
 
   return mutationWrapper<APIOutput, UnbanPlayerInput>(
     useMutation<APIOutput, AxiosError<APIOutput>, UnbanPlayerInput>({
@@ -151,6 +152,7 @@ interface PlayerRemoveInput {
 
 export const usePlayerRemove = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
 
   return mutationWrapper<APIOutput, PlayerRemoveInput>(

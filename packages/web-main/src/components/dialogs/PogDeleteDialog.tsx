@@ -17,12 +17,11 @@ export const PogDeleteDialog: FC<PogDeleteDialogProps> = ({
   gameServerName,
   ...dialogOptions
 }) => {
-  const { mutateAsync, isPending: isDeleting, error } = usePogRemove();
+  const { mutate, isPending: isDeleting, error } = usePogRemove();
 
-  const handleOnDelete = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleOnDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    await mutateAsync({ playerId, gameServerId });
-    dialogOptions.onOpenChange(false);
+    mutate({ playerId, gameServerId }, { onSuccess: () => dialogOptions.onOpenChange(false) });
   };
 
   return (

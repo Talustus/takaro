@@ -21,6 +21,8 @@ import { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { TimePeriodSelectField } from '../../../components/selects';
 import { AiOutlineQuestion as QuestionIcon } from 'react-icons/ai';
+import { useGameServerDocumentTitle } from '../../../hooks/useDocumentTitle';
+import { gameServerQueryOptions } from '../../../queries/gameserver';
 
 const Container = styled.div`
   display: grid;
@@ -34,10 +36,16 @@ const Container = styled.div`
 
 export const Route = createFileRoute('/_auth/gameserver/$gameServerId/dashboard/statistics')({
   component: Component,
+  loader: async ({ params, context }) => {
+    return {
+      gameServer: await context.queryClient.ensureQueryData(gameServerQueryOptions(params.gameServerId)),
+    };
+  },
 });
 
 function Component() {
   const { gameServerId } = Route.useParams();
+  const loaderData = Route.useLoaderData();
   const { control } = useForm({
     defaultValues: {
       period: 'last24Hours',
@@ -77,10 +85,16 @@ function Component() {
     return { startDate, now };
   }, [selectedPeriod]);
 
+  const { data: gameServer } = useQuery({
+    ...gameServerQueryOptions(gameServerId),
+    initialData: loaderData.gameServer,
+  });
   const { data: currencyInRotationData } = useQuery(CurrencyStatsQueryOptions(gameServerId));
   const { data: countryStats } = useQuery(CountriesStatsQueryOptions({ gameServerIds: [gameServerId] }));
   const { data: playersOnlineData } = useQuery(PlayersOnlineStatsQueryOptions(gameServerId, startDate, now));
   const { data: latencyData } = useQuery(LatencyStatsQueryOptions(gameServerId, startDate, now));
+
+  useGameServerDocumentTitle('statistics', gameServer);
 
   if (!playersOnlineData || !latencyData || !countryStats || !currencyInRotationData) {
     return <Loading />;

@@ -11,7 +11,7 @@ import { ModuleOnboarding } from '../../components/module-builder/ModuleOnboardi
 import { ModuleBuilderProvider } from '../../components/module-builder/useModuleBuilderStore';
 import { FileMap, FileType } from '../../components/module-builder/types';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
-import { globalGameServerSetingQueryOptions } from '../../queries/setting';
+import { globalGameServerSettingQueryOptions } from '../../queries/setting';
 import { userMeQueryOptions } from '../../queries/user';
 import { useQueries } from '@tanstack/react-query';
 import { zodValidator } from '@tanstack/zod-adapter';
@@ -41,7 +41,7 @@ export const Route = createFileRoute('/_auth/module-builder/$moduleId/$moduleVer
   beforeLoad: async ({ context }) => {
     const session = await context.queryClient.ensureQueryData(userMeQueryOptions());
     const developerModeEnabled = await context.queryClient.ensureQueryData(
-      globalGameServerSetingQueryOptions('developerMode'),
+      globalGameServerSettingQueryOptions('developerMode'),
     );
 
     if (!hasPermission(session, ['MANAGE_MODULES']) && developerModeEnabled.value == 'true') {

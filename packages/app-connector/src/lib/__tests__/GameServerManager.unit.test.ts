@@ -788,6 +788,53 @@ describe('GameServerManager', () => {
         expect((gameServerManager as any).emitterMap.has(gameServerId)).to.be.false;
         expect(mockEmitter.stop).to.have.been.called;
       });
+
+      it('should not remove generic servers during sync', async () => {
+        const domainId = 'domain-123';
+        const genericServerId = 'generic-server-456';
+
+        // Import GenericEmitter for instanceof check
+        const { GenericEmitter } = await import('@takaro/gameserver');
+
+        // Create a mock GenericEmitter instance
+        const mockGenericEmitter = Object.create(GenericEmitter.prototype);
+        mockGenericEmitter.start = sandboxInstance.stub().resolves();
+        mockGenericEmitter.stop = sandboxInstance.stub().resolves();
+        mockGenericEmitter.on = sandboxInstance.stub();
+        mockGenericEmitter.off = sandboxInstance.stub();
+        mockGenericEmitter.emit = sandboxInstance.stub().resolves();
+        mockGenericEmitter.removeAllListeners = sandboxInstance.stub();
+
+        // Manually add a generic server to emitterMap (simulating websocket connection)
+        (gameServerManager as any).emitterMap.set(genericServerId, {
+          domainId,
+          emitter: mockGenericEmitter,
+        });
+        (gameServerManager as any).lastMessageMap.set(genericServerId, Date.now());
+        (gameServerManager as any).gameServerDomainMap.set(genericServerId, domainId);
+
+        // Mock active domains
+        adminClientInstance.domain.domainControllerSearch = sandboxInstance.stub().resolves({
+          data: {
+            data: [{ id: domainId, name: 'Test Domain', state: 'ACTIVE' }],
+            meta: { total: 1 },
+          },
+        });
+
+        // Mock empty game server list (generic server not returned because reachable=false)
+        domainClientInstance.gameserver.gameServerControllerSearch = sandboxInstance.stub().resolves({
+          data: {
+            data: [],
+            meta: { total: 0 },
+          },
+        });
+
+        await (gameServerManager as any).syncServers();
+
+        // Verify generic server was NOT removed
+        expect((gameServerManager as any).emitterMap.has(genericServerId)).to.be.true;
+        expect(mockGenericEmitter.stop).to.not.have.been.called;
+      });
     });
   });
 

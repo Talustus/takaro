@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { GeoMercator, GeoMercatorProps } from '.';
 import { Card } from '../../../components';
 import { CountryList } from '../../data/CountryList';

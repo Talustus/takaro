@@ -1,6 +1,12 @@
-import React, { useState, useMemo } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
-import { Button, TextField, CollapseList, Chip, RadioGroup, Switch, Drawer, DrawerSkeleton } from '../../../components';
+import { useState, useMemo } from 'react';
+import { Meta, StoryFn } from '@storybook/react-vite';
+import { Drawer, DrawerSkeleton } from '../Drawer';
+import { Button } from '../../actions/Button';
+import { ControlledTextField as TextField } from '../../inputs/TextField';
+import { CollapseList } from '../../other/CollapseList';
+import { Chip } from '../Chip';
+import { ControlledRadioGroup as RadioGroup } from '../../inputs/RadioGroup';
+import { ControlledSwitch as Switch } from '../../inputs/Switch';
 import { styled } from '../../../styled';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -66,7 +72,7 @@ export const Default: StoryFn<DrawerOptions> = ({ promptCloseConfirmation }) => 
           <Drawer.Heading>Product Details</Drawer.Heading>
           <Drawer.Body>
             <Status>
-              Status: <Chip label="active" color="success" variant="outline" />
+              Status: <Chip label="active" color="success" />
             </Status>
             <form id="myform" onSubmit={handleSubmit(onSubmit)}>
               <CollapseList>

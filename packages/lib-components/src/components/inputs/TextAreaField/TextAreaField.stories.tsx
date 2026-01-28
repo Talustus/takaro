@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-vite';
 import { styled } from '../../../styled';
-import { TextAreaField, TextAreaFieldProps, Button } from '../../../components';
+import {
+  ControlledTextAreaField as TextAreaField,
+  ControlledTextAreaFieldProps as TextAreaFieldProps,
+} from './Controlled';
+import { Button } from '../../actions/Button';
 import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';

@@ -15,15 +15,11 @@ export const UserInviteDialog: FC<RequiredDialogOptions> = ({ ...dialogOptions }
     resolver: zodResolver(validationSchema),
     mode: 'onSubmit',
   });
-  const { mutate, isPending, isError, isSuccess, error } = useInviteUser();
+  const { mutate, isPending, isError, error } = useInviteUser();
 
   const onSubmit: SubmitHandler<z.infer<typeof validationSchema>> = (data) => {
-    mutate({ email: data.userEmail });
+    mutate({ email: data.userEmail }, { onSuccess: () => dialogOptions.onOpenChange(false) });
   };
-
-  if (isSuccess) {
-    dialogOptions.onOpenChange(false);
-  }
 
   return (
     <Dialog {...dialogOptions}>

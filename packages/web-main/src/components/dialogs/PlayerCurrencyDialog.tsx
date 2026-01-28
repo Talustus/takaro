@@ -20,12 +20,8 @@ interface CurrencyDialogProps extends RequiredDialogOptions {
 }
 
 export const PlayerCurrencyDialog: FC<CurrencyDialogProps> = ({ playerId, gameServerId, ...dialogOptions }) => {
-  const { mutateAsync: addCurrency, isPending: isAddingCurrency, error: addCurrencyError } = useAddCurrency();
-  const {
-    mutateAsync: deductCurrency,
-    isPending: isDeductingCurrency,
-    error: deductCurrencyError,
-  } = useDeductCurrency();
+  const { mutate: addCurrency, isPending: isAddingCurrency, error: addCurrencyError } = useAddCurrency();
+  const { mutate: deductCurrency, isPending: isDeductingCurrency, error: deductCurrencyError } = useDeductCurrency();
 
   const { data, isPending } = useQuery(gameServerSettingQueryOptions('currencyName', gameServerId));
 
@@ -37,13 +33,13 @@ export const PlayerCurrencyDialog: FC<CurrencyDialogProps> = ({ playerId, gameSe
     },
   });
 
-  const submit: SubmitHandler<z.infer<typeof currencySchema>> = async ({ currency, variant }) => {
+  const submit: SubmitHandler<z.infer<typeof currencySchema>> = ({ currency, variant }) => {
+    const onSuccess = () => dialogOptions.onOpenChange(false);
     if (variant === 'add') {
-      await addCurrency({ playerId, gameServerId, currency });
+      addCurrency({ playerId, gameServerId, currency }, { onSuccess });
     } else if (variant === 'deduct') {
-      await deductCurrency({ playerId, gameServerId, currency });
+      deductCurrency({ playerId, gameServerId, currency }, { onSuccess });
     }
-    dialogOptions.onOpenChange(false);
   };
 
   return (

@@ -43,27 +43,26 @@ export type ModuleOnboardingProps = {
 };
 
 export const ModuleOnboarding: FC<ModuleOnboardingProps> = ({ moduleVersion }) => {
-  const { mutateAsync: createHook, isSuccess: createHookIsSuccess, error: createHookError } = useHookCreate();
-  const {
-    mutateAsync: createCommand,
-    isSuccess: createCommandIsSuccess,
-    error: createCommandError,
-  } = useCommandCreate();
-  const {
-    mutateAsync: createCronJob,
-    isSuccess: createCronJobIsSuccess,
-    error: createCronJobError,
-  } = useCronJobCreate();
+  const { mutate: createHook, error: createHookError } = useHookCreate();
+  const { mutate: createCommand, error: createCommandError } = useCommandCreate();
+  const { mutate: createCronJob, error: createCronJobError } = useCronJobCreate();
   const navigate = useNavigate();
   const { moduleVersionTag } = useParams({ from: '/_auth/module-builder/$moduleId/$moduleVersionTag' });
 
   const { moduleId, id: versionId } = moduleVersion;
 
-  const createComponent = async (componentType: 'hook' | 'cronjob' | 'command') => {
-    try {
-      switch (componentType) {
-        case 'hook':
-          await createHook({
+  const onSuccess = () => {
+    navigate({
+      to: '/module-builder/$moduleId/$moduleVersionTag',
+      params: { moduleId: moduleVersion.moduleId, moduleVersionTag },
+    });
+  };
+
+  const createComponent = (componentType: 'hook' | 'cronjob' | 'command') => {
+    switch (componentType) {
+      case 'hook':
+        createHook(
+          {
             versionId,
             moduleId,
             hook: {
@@ -72,10 +71,13 @@ export const ModuleOnboarding: FC<ModuleOnboardingProps> = ({ moduleVersion }) =
               versionId,
               regex: 'takaro-hook-regex-placeholder',
             },
-          });
-          break;
-        case 'cronjob':
-          await createCronJob({
+          },
+          { onSuccess },
+        );
+        break;
+      case 'cronjob':
+        createCronJob(
+          {
             versionId,
             moduleId,
             cronJob: {
@@ -83,10 +85,13 @@ export const ModuleOnboarding: FC<ModuleOnboardingProps> = ({ moduleVersion }) =
               temporalValue: '5 4 * * *',
               versionId,
             },
-          });
-          break;
-        case 'command':
-          await createCommand({
+          },
+          { onSuccess },
+        );
+        break;
+      case 'command':
+        createCommand(
+          {
             moduleId,
             versionId,
             command: {
@@ -94,36 +99,28 @@ export const ModuleOnboarding: FC<ModuleOnboardingProps> = ({ moduleVersion }) =
               versionId,
               trigger: 'test',
             },
-          });
-          break;
-      }
-    } catch (e) {
-      console.error(e);
+          },
+          { onSuccess },
+        );
+        break;
     }
   };
-
-  if (createHookIsSuccess || createCommandIsSuccess || createCronJobIsSuccess) {
-    navigate({
-      to: '/module-builder/$moduleId/$moduleVersionTag',
-      params: { moduleId: moduleVersion.moduleId, moduleVersionTag },
-    });
-  }
 
   return (
     <Wrapper>
       <Title>Choose one to get started</Title>
       <Grid columns={3}>
-        <InfoCard title="Commands" onClick={async () => await createComponent('command')}>
+        <InfoCard title="Commands" onClick={() => createComponent('command')}>
           Commands are triggered by a user. They are triggered when a player sends a chat message starting with the
           configured command prefix. Note that this means that commands are a manual action, unlike Hooks and Cronjobs
           which are triggered with any user-intervention.
         </InfoCard>
-        <InfoCard title="Hooks" onClick={async () => await createComponent('hook')}>
+        <InfoCard title="Hooks" onClick={() => createComponent('hook')}>
           Hooks are triggered when a certain event happens on a Gameserver. Think of it as a callback function that is
           executed when a certain event happens. For example, when a player joins a server, a Hook can be triggered that
           will send a message to the player.
         </InfoCard>
-        <InfoCard title="CronJobs" onClick={async () => await createComponent('cronjob')}>
+        <InfoCard title="CronJobs" onClick={() => createComponent('cronjob')}>
           Cronjobs are triggered based on time. This can be a simple repeating pattern like "Every 5 minutes" or "Every
           day" or you can use raw Cron (opens in a new tab) syntax to define more complex patterns like "Every Monday,
           Wednesday and Friday at 2 PM".

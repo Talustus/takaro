@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { EventPlayerConnected, EventChatMessage, HookEvents, ChatChannel } from '@takaro/modules';
+import { EventPlayerConnected, EventChatMessage, EventLogLine, HookEvents, ChatChannel } from '@takaro/modules';
 import { IntegrationTest, expect, EventsAwaiter, SetupGameServerPlayers } from '@takaro/test';
 import {
   HookOutputDTO,
@@ -394,6 +394,79 @@ const tests = [
         filters: { eventName: [IHookEventTypeEnum.HookExecuted] },
       });
       expect(hookExecutedEvents.data.data).to.have.length(2);
+    },
+  }),
+  new IntegrationTest<IStandardSetupData>({
+    group,
+    snapshot: false,
+    name: 'Log hook with empty regex should NOT match log events',
+    setup,
+    test: async function () {
+      // Create a log-type hook with empty regex (simulating the HordeNightWarnings bug)
+      await this.client.hook.hookControllerCreate({
+        name: 'Log hook no regex',
+        versionId: this.setupData.mod.latestVersion.id,
+        regex: '',
+        eventType: 'log',
+      });
+
+      // Trigger multiple log events
+      for (let i = 0; i < 5; i++) {
+        await this.client.hook.hookControllerTrigger({
+          gameServerId: this.setupData.gameserver.id,
+          moduleId: this.setupData.mod.id,
+          eventType: HookEvents.LOG_LINE,
+          eventMeta: new EventLogLine({
+            msg: `some log message ${i}`,
+          }),
+        });
+      }
+
+      // Wait a bit for any hooks to process
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Check that no hooks were executed
+      const hookExecutedEvents = await this.client.event.eventControllerSearch({
+        filters: { eventName: [IHookEventTypeEnum.HookExecuted] },
+      });
+
+      // The hook should NOT have executed because it has empty regex
+      expect(hookExecutedEvents.data.data).to.have.length(0);
+    },
+  }),
+  new IntegrationTest<IStandardSetupData>({
+    group,
+    snapshot: false,
+    name: 'Non-log hook with empty regex SHOULD match its event type',
+    setup,
+    test: async function () {
+      // Create a player-connected hook with empty regex
+      await this.client.hook.hookControllerCreate({
+        name: 'Player hook no regex',
+        versionId: this.setupData.mod.latestVersion.id,
+        regex: '',
+        eventType: 'player-connected',
+      });
+
+      // Set up events awaiter
+      const eventsAwaiter = new EventsAwaiter();
+      await eventsAwaiter.connect(this.client);
+      // We expect 2 hooks to execute: the original one with regex '.*' and the new one with empty regex
+      const hookExecutedPromise = eventsAwaiter.waitForEvents(IHookEventTypeEnum.HookExecuted, 2);
+
+      // Trigger a player-connected event
+      await this.client.hook.hookControllerTrigger({
+        gameServerId: this.setupData.gameserver.id,
+        moduleId: this.setupData.mod.id,
+        eventType: HookEvents.PLAYER_CONNECTED,
+        eventMeta: new EventPlayerConnected({
+          msg: 'player connected',
+        }),
+      });
+
+      // Both hooks should execute
+      const hookExecutedEvents = await hookExecutedPromise;
+      expect(hookExecutedEvents).to.have.length(2);
     },
   }),
 ];

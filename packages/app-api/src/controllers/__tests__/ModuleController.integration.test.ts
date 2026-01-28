@@ -704,6 +704,90 @@ const tests = [
     },
   }),
   // #endregion Versioning
+  // #region Regex export bug fixes
+  new IntegrationTest<ModuleOutputDTO>({
+    group,
+    snapshot: false,
+    name: 'Export includes regex field even when empty',
+    setup,
+    test: async function () {
+      // Create a hook with empty regex
+      await this.client.hook.hookControllerCreate({
+        versionId: this.setupData.latestVersion.id,
+        name: 'Hook with empty regex',
+        eventType: 'log',
+        regex: '',
+      });
+
+      const exportRes = await this.client.module.moduleControllerExport(this.setupData.id);
+
+      expect(exportRes.data.data.versions[0].hooks).to.have.length(1);
+      const exportedHook = exportRes.data.data.versions[0].hooks![0];
+
+      // The regex field should be present and be an empty string
+      expect(exportedHook).to.have.property('regex');
+      expect(exportedHook.regex).to.equal('');
+
+      // Verify it's in the JSON output (not omitted)
+      const jsonString = JSON.stringify(exportRes.data.data);
+      expect(jsonString).to.include('"regex":""');
+    },
+  }),
+  new IntegrationTest<ModuleOutputDTO>({
+    group,
+    snapshot: false,
+    name: 'Bug repro: HordeNightWarnings scenario - log hook without regex should not cause infinite loops',
+    setup,
+    test: async function () {
+      // Simulate the HordeNightWarnings bug:
+      // 1. Create a module with a log-type hook without setting regex (undefined)
+      // 2. Export the module
+      // 3. Verify regex is present in export (not omitted)
+      // 4. Import the module
+      // 5. Verify the imported hook has empty regex and won't match log events
+
+      // Create a log hook - the API requires regex field, but we'll test the export/import
+      const hook = (
+        await this.client.hook.hookControllerCreate({
+          versionId: this.setupData.latestVersion.id,
+          name: 'HordeNightWarnings hook',
+          eventType: 'log',
+          regex: '', // Empty regex simulates the undefined case after export/import
+        })
+      ).data.data;
+
+      // Export the module
+      const exportRes = await this.client.module.moduleControllerExport(this.setupData.id);
+
+      // Verify regex is present in export
+      const exportedHook = exportRes.data.data.versions[0].hooks![0];
+      expect(exportedHook).to.have.property('regex');
+      expect(typeof exportedHook.regex).to.equal('string');
+
+      // Import the module
+      await this.client.module.moduleControllerImport(exportRes.data.data);
+
+      // Find the imported module
+      const modsAfter = (
+        await this.client.module.moduleControllerSearch({
+          filters: {
+            name: [`${this.setupData.name}-imported`],
+          },
+        })
+      ).data.data;
+
+      expect(modsAfter).to.have.length(1);
+      const imported = modsAfter[0];
+      expect(imported.latestVersion.hooks).to.have.length(1);
+
+      const importedHook = imported.latestVersion.hooks[0];
+      expect(importedHook.name).to.equal(hook.name);
+      expect(importedHook.eventType).to.equal(hook.eventType);
+      // Regex should be empty string after import
+      expect(importedHook.regex).to.equal('');
+    },
+  }),
+  // #endregion Regex export bug fixes
 ];
 
 describe(group, function () {

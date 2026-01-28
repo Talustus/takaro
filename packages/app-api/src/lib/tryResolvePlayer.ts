@@ -11,10 +11,13 @@ const log = logger('lib:tryResolvePlayer');
  * Try and resolve a player from the given input.
  * Supports (partial) names, IDs, ...
  * @param input Some user-provided input
+ * @param gameServerId The game server to search within
+ * @param onlineOnly If true, only match players who are currently online
  */
 export async function tryResolvePlayer(
   input: string,
   gameServerId: string,
+  onlineOnly: boolean = false,
 ): Promise<PlayerOnGameserverOutputWithRolesDTO> {
   const domainId = ctx.data.domain;
 
@@ -35,7 +38,7 @@ export async function tryResolvePlayer(
     extend: ['playerOnGameServers'],
   });
 
-  const filteredByGameServer = possiblePlayers.results
+  let filteredByGameServer = possiblePlayers.results
     .map((p) => {
       if (!p.playerOnGameServers || !p.playerOnGameServers.length) return null;
       return p.playerOnGameServers.filter((pog) => pog.gameServerId === gameServerId);
@@ -43,12 +46,22 @@ export async function tryResolvePlayer(
     .filter((pogs) => pogs !== null && pogs.length > 0)
     .flat();
 
+  if (onlineOnly) {
+    filteredByGameServer = filteredByGameServer.filter((pog) => pog !== null && pog.online === true);
+  }
+
   if (filteredByGameServer.length === 0) {
-    throw new errors.NotFoundError(`No player found with the name or ID "${input}"`);
+    const notFoundMsg = onlineOnly
+      ? `No online player found with the name or ID "${input}"`
+      : `No player found with the name or ID "${input}"`;
+    throw new errors.NotFoundError(notFoundMsg);
   }
 
   if (filteredByGameServer.length > 1) {
-    throw new errors.BadRequestError(`Multiple players found with the name or ID "${input}"`);
+    const multipleFoundMsg = onlineOnly
+      ? `Multiple online players found with the name or ID "${input}"`
+      : `Multiple players found with the name or ID "${input}"`;
+    throw new errors.BadRequestError(multipleFoundMsg);
   }
 
   if (!filteredByGameServer[0]) {

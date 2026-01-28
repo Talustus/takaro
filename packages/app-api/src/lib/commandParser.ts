@@ -40,6 +40,9 @@ export async function parseCommand(
       case 'player':
         parsedArgs[argument.name] = await tryResolvePlayer(value, gameServerId);
         break;
+      case 'onlinePlayer':
+        parsedArgs[argument.name] = await tryResolvePlayer(value, gameServerId, true);
+        break;
       case 'string':
         parsedArgs[argument.name] = value.replace(/"/g, '');
         break;

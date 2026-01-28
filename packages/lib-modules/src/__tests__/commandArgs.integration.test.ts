@@ -58,7 +58,39 @@ const playerArgSetup = async function (this: IntegrationTest<IModuleTestsSetupDa
       await data.player.pm(args.name.gameId);
       await data.player.pm(args.name.positionX.toString());
     }
-    
+
+    await main();`,
+  });
+
+  await this.client.module.moduleInstallationsControllerInstallModule({
+    gameServerId: setupRes.gameserver.id,
+    versionId: moduleRes.data.data.latestVersion.id,
+  });
+
+  return setupRes;
+};
+
+const onlinePlayerArgSetup = async function (this: IntegrationTest<IModuleTestsSetupData>) {
+  const setupRes = await modulesTestSetup.bind(this)();
+  const moduleRes = await this.client.module.moduleControllerCreate({
+    name: 'test',
+  });
+
+  await this.client.command.commandControllerCreate({
+    name: 'test',
+    trigger: 'test',
+    versionId: moduleRes.data.data.latestVersion.id,
+    arguments: [{ name: 'name', type: 'onlinePlayer', position: 0 }],
+    function: `import { getTakaro, getData } from '@takaro/helpers';
+
+    async function main() {
+      const data = await getData();
+      const takaro = await getTakaro(data);
+      const { arguments: args } = data;
+      await data.player.pm(args.name.gameId);
+      await data.player.pm(args.name.positionX.toString());
+    }
+
     await main();`,
   });
 
@@ -280,6 +312,56 @@ const tests = [
 
       expect((await events).length).to.be.eq(1);
       expect((await events)[0].data.meta.msg).to.match(/No player found with the name or ID/);
+    },
+  }),
+  new IntegrationTest<IModuleTestsSetupData>({
+    name: 'Can do an onlinePlayer arg for an online player',
+    group,
+    snapshot: false,
+    setup: onlinePlayerArgSetup,
+    test: async function () {
+      const events = (await new EventsAwaiter().connect(this.client)).waitForEvents(GameEvents.CHAT_MESSAGE, 2);
+
+      const pogRes = await this.client.playerOnGameserver.playerOnGameServerControllerSearch({
+        filters: {
+          playerId: [this.setupData.players[0].id],
+          gameServerId: [this.setupData.gameserver.id],
+        },
+      });
+      const pog = pogRes.data.data[0];
+
+      await this.client.command.commandControllerTrigger(this.setupData.gameserver.id, {
+        msg: `/test ${this.setupData.players[0].name}`,
+        playerId: this.setupData.players[0].id,
+      });
+
+      expect((await events).length).to.be.eq(2);
+      expect((await events)[0].data.meta.msg).to.be.eq(pog.gameId);
+      expect((await events)[1].data.meta.msg).to.be.eq(pog.positionX?.toString());
+    },
+  }),
+  new IntegrationTest<IModuleTestsSetupData>({
+    name: 'Shows an error when targeting an offline player with onlinePlayer arg',
+    group,
+    snapshot: false,
+    setup: onlinePlayerArgSetup,
+    test: async function () {
+      // Kick player 1 to set them offline (this emits PLAYER_DISCONNECTED and updates the database)
+      await this.client.gameserver.gameServerControllerKickPlayer(
+        this.setupData.gameserver.id,
+        this.setupData.players[1].id,
+        { reason: 'test' },
+      );
+
+      const events = (await new EventsAwaiter().connect(this.client)).waitForEvents(GameEvents.CHAT_MESSAGE, 1);
+
+      await this.client.command.commandControllerTrigger(this.setupData.gameserver.id, {
+        msg: `/test ${this.setupData.players[1].name}`,
+        playerId: this.setupData.players[0].id,
+      });
+
+      expect((await events).length).to.be.eq(1);
+      expect((await events)[0].data.meta.msg).to.match(/No online player found with the name or ID/);
     },
   }),
 ];

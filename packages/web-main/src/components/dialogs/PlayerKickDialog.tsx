@@ -22,8 +22,7 @@ export const PlayerKickDialog: FC<PlayerKickDialogProps> = ({ gameServerId, play
   const { mutate } = useKickPlayerOnGameServer();
 
   const onSubmit: SubmitHandler<z.infer<typeof validationSchema>> = ({ reason }) => {
-    mutate({ playerId, gameServerId, reason });
-    dialogOptions.onOpenChange(false);
+    mutate({ playerId, gameServerId, reason }, { onSuccess: () => dialogOptions.onOpenChange(false) });
   };
 
   return (

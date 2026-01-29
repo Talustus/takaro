@@ -239,7 +239,7 @@ const SteamInfoCard: FC<{ player: PlayerOutputDTO }> = ({ player }) => {
     <InfoCard
       variant="outline"
       clickable
-      onClick={() => window.open(`https://steamcommunity.com/profiles/${player.steamId}`)}
+      onClick={() => window.open(`https://steamcommunity.com/profiles/${player.steamId}`, '_blank', 'noopener,noreferrer')}
     >
       <InfoCard.Title label="Steam" />
       <InfoCard.Body>

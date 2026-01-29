@@ -212,7 +212,12 @@ export const CategorySelector: FC<CategorySelectorProps> = ({
         <SearchIconWrapper>
           <SearchIcon />
         </SearchIconWrapper>
-        <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder={placeholder} />
+        <SearchInput
+          aria-label="Search categories"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder={placeholder}
+        />
       </SearchContainer>
 
       <CategoryList>

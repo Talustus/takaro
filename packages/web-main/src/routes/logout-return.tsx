@@ -16,7 +16,7 @@ function Component() {
     router.invalidate().finally(() => {
       navigate({ to: '/login', replace: true });
     });
-  });
+  }, []);
 
   return <div>Logout success, you are being redirected.</div>;
 }

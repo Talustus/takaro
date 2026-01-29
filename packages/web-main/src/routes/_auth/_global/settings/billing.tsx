@@ -23,7 +23,7 @@ export const Route = createFileRoute('/_auth/_global/settings/billing')({
     return {
       currentUserCount: await context.queryClient.ensureQueryData(userCountQueryOptions()),
       currentGameServerCount: await context.queryClient.ensureQueryData(gameServerCountQueryOptions()),
-      currentVariableCount: await context.queryClient.ensureQueryData(gameServerCountQueryOptions()),
+      currentVariableCount: await context.queryClient.ensureQueryData(variableCountQueryOptions()),
       currentModuleCount: await context.queryClient.ensureQueryData(customModuleCountQueryOptions()),
       me: await context.queryClient.ensureQueryData(userMeQueryOptions()),
     };

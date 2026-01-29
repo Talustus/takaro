@@ -26,12 +26,12 @@ export const PlayerBanDialog: FC<PlayerBanDialogProps> = ({ playerId, ...dialogO
   const { mutate: mutateBanPlayer, isPending: isLoadingBanPlayer, error: banError } = useBanPlayer();
 
   const handleOnBanPlayer: SubmitHandler<z.infer<typeof validationSchema>> = ({ reason, gameServerId, expiresAt }) => {
-    // If no gameServerId is provided, the ban is considered global. But isGlobal always needs to be set explicitly.
-    const isGlobal = !!gameServerId;
-    // if global is selected, it will have value null, api requires undefined
+    // if global is selected, it will have value 'null', api requires undefined
     if (gameServerId === 'null') {
       gameServerId = undefined;
     }
+    // If no gameServerId is provided, the ban is considered global. But isGlobal always needs to be set explicitly.
+    const isGlobal = !gameServerId;
 
     mutateBanPlayer(
       { playerId, reason, gameServerId, isGlobal, until: expiresAt },

@@ -28,8 +28,10 @@ export const PlayerGiveItemDialog: FC<PlayerGiveItemDialogProps> = ({ gameServer
   const { mutate } = useGiveItem();
 
   const onSubmit: SubmitHandler<z.infer<typeof validationSchema>> = ({ itemId, amount, quality }) => {
-    mutate({ playerId, gameServerId, name: itemId, amount, quality: quality ?? '0' });
-    dialogOptions.onOpenChange(false);
+    mutate(
+      { playerId, gameServerId, name: itemId, amount, quality: quality ?? '0' },
+      { onSuccess: () => dialogOptions.onOpenChange(false) },
+    );
   };
 
   return (

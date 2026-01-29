@@ -123,7 +123,7 @@ const IpInfo: FC<{ ipInfo: IpHistoryOutputDTO[] }> = ({ ipInfo }) => {
             <HistoryItem key={`${ip.ip}-${ip.createdAt}-${index}`}>
               <HistoryEntry>
                 <MainText isFirst={isFirst} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <IpWhoisLink href={`https://scamalytics.com/ip/${ip.ip}`} target="_blank">
+                  <IpWhoisLink href={`https://scamalytics.com/ip/${ip.ip}`} target="_blank" rel="noopener noreferrer">
                     {ip.ip}
                   </IpWhoisLink>
                   {ip.country && (

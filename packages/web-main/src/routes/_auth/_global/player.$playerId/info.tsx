@@ -16,12 +16,12 @@ export const Route = createFileRoute('/_auth/_global/player/$playerId/info')({
 });
 
 function Component() {
-  const loadedPLayer = Route.useLoaderData();
+  const loadedPlayer = Route.useLoaderData();
   const { playerId } = Route.useParams();
 
   const { data: player } = useQuery({
     ...playerQueryOptions(playerId),
-    initialData: loadedPLayer,
+    initialData: loadedPlayer,
   });
 
   return (

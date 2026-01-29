@@ -42,7 +42,7 @@ export const PlayerGiveItemDialog: FC<PlayerGiveItemDialogProps> = ({ gameServer
           <form onSubmit={handleSubmit(onSubmit)}>
             <Alert
               variant="warning"
-              text="Takaro currently cannot detetermine whether an item supports quality. If you assign a quality to an item that doesn't support it,
+              text="Takaro currently cannot determine whether an item supports quality. If you assign a quality to an item that doesn't support it,
               the item will not be given."
             />
             <ItemSelectQueryField name="itemId" control={control} gameServerId={gameServerId} />

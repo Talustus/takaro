@@ -72,7 +72,7 @@ export const LoginDiscordCard: FC<LoginDiscordCardProps> = ({ session: sessionPr
               )}
             </StatusText>
           </ConnectionInfo>
-          <a href={`${getConfigVar('apiUrl')}/auth/discord?redirect=${window.location.href}`}>
+          <a href={`${getConfigVar('apiUrl')}/auth/discord?redirect=${encodeURIComponent(window.location.href)}`}>
             <Button>{hasLinkedDiscord ? 'Update connection' : 'Connect Discord'}</Button>
           </a>
         </InnerBody>

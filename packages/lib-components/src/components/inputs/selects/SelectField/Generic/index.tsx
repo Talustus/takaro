@@ -157,7 +157,7 @@ export const GenericSelectField: FC<GenericSelectFieldProps> & SubComponentTypes
       // TODO
       // selectedIndex: multiple ? null : (selectedIndex as number),
       onNavigate: setActiveIndex,
-      scrollItemIntoView: multiple ? false : true,
+      scrollItemIntoView: !multiple,
     }),
   ]);
 

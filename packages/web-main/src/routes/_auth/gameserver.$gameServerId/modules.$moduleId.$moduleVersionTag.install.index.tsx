@@ -22,7 +22,7 @@ export const Route = createFileRoute('/_auth/gameserver/$gameServerId/modules/$m
     ]);
 
     if (modVersionsResponse.data.length !== 1) {
-      notFound();
+      throw notFound();
     }
 
     return { mod, modVersionsResponse };
@@ -46,7 +46,7 @@ function Component() {
   });
 
   if (modVersions.data.length !== 1) {
-    notFound();
+    throw notFound();
   }
 
   return <InstallModuleForm modVersion={modVersions.data[0]} gameServerId={gameServerId} mod={mod} readOnly={false} />;

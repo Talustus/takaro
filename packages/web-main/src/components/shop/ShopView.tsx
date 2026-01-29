@@ -181,6 +181,7 @@ export const ShopView: FC<ShopViewProps> = ({ gameServerId, currency, currencyNa
             </p>
           </div>
         ),
+        onExited: () => URL.revokeObjectURL(url),
       });
     }
   };

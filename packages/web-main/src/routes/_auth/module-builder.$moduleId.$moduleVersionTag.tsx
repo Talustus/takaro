@@ -44,7 +44,7 @@ export const Route = createFileRoute('/_auth/module-builder/$moduleId/$moduleVer
       globalGameServerSettingQueryOptions('developerMode'),
     );
 
-    if (!hasPermission(session, ['MANAGE_MODULES']) && developerModeEnabled.value == 'true') {
+    if (!hasPermission(session, ['MANAGE_MODULES']) || developerModeEnabled.value !== 'true') {
       throw redirect({ to: '/forbidden' });
     }
   },

@@ -181,6 +181,7 @@ export const ShopView: FC<ShopViewProps> = ({ gameServerId, currency, currencyNa
             </p>
           </div>
         ),
+        onExited: () => URL.revokeObjectURL(url),
       });
     }
   };
@@ -207,7 +208,7 @@ export const ShopView: FC<ShopViewProps> = ({ gameServerId, currency, currencyNa
         <PermissionsGuard requiredPermissions={['MANAGE_SHOP_LISTINGS']}>
           <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', gap: '10px' }}>
             <Dropdown>
-              <Dropdown.Trigger asChild>
+              <Dropdown.Trigger>
                 <Button icon={<MenuIcon />}>Shop actions</Button>
               </Dropdown.Trigger>
               <Dropdown.Menu>

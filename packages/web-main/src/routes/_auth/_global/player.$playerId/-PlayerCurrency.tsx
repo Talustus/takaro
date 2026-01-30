@@ -82,7 +82,7 @@ export const CurrencyView: FC<CurrencyViewProps> = ({
             </strong>
           </h2>
           <Dropdown>
-            <Dropdown.Trigger asChild>
+            <Dropdown.Trigger>
               <IconButton icon={<MenuIcon />} ariaLabel="Currency actions" />
             </Dropdown.Trigger>
             <Dropdown.Menu>

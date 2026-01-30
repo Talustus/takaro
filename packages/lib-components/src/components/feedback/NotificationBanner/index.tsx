@@ -65,7 +65,7 @@ export const NotificationBanner: FC<NotificationBannerProps> = ({ title, descrip
             <p>{description}</p>
           </div>
           <Tooltip>
-            <Tooltip.Trigger asChild>
+            <Tooltip.Trigger>
               <CloseIcon onClick={() => setVisible(false)} size={18} />
             </Tooltip.Trigger>
             <Tooltip.Content>Close</Tooltip.Content>

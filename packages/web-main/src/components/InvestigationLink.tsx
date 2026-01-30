@@ -40,7 +40,7 @@ export const InvestigationLink: FC<InvestigationLinkProps> = ({
   if (iconOnly && showIcon) {
     return (
       <Tooltip>
-        <Tooltip.Trigger asChild>
+        <Tooltip.Trigger>
           <StyledIconButton
             icon={<LinkIcon />}
             onClick={handleClick}
@@ -59,7 +59,7 @@ export const InvestigationLink: FC<InvestigationLinkProps> = ({
       {children}
       {showIcon && (
         <Tooltip>
-          <Tooltip.Trigger asChild>
+          <Tooltip.Trigger>
             <StyledIconButton
               icon={<LinkIcon />}
               onClick={handleClick}

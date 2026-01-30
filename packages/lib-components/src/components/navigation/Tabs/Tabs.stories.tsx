@@ -45,7 +45,7 @@ export const PopOver: StoryFn<TabsProps> = () => {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <Popover.Trigger asChild>
+      <Popover.Trigger>
         <IconButton icon={<TagIcon />} onClick={() => setOpen(!open)} ariaLabel="open popover" />
       </Popover.Trigger>
       <Popover.Content>

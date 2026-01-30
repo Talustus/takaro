@@ -158,7 +158,7 @@ export function Filter<DataType extends object>({ table }: FilterProps<DataType>
 
   return (
     <Popover open={open} onOpenChange={setOpen} placement="bottom-end">
-      <Popover.Trigger asChild>
+      <Popover.Trigger>
         <IconButton icon={<FilterIcon />} onClick={() => setOpen(!open)} size="large" ariaLabel="filter" />
       </Popover.Trigger>
       <Popover.Content>
@@ -169,7 +169,7 @@ export function Filter<DataType extends object>({ table }: FilterProps<DataType>
                 <FilterContainer key={field.id} hasMultipleFields={fields.length > 1}>
                   {fields.length > 1 && (
                     <Tooltip key={`remove-${field.id}`}>
-                      <Tooltip.Trigger asChild>
+                      <Tooltip.Trigger>
                         <IconButton
                           size="tiny"
                           icon={<RemoveIcon />}

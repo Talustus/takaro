@@ -15,7 +15,8 @@ export const Route = createFileRoute('/_auth')({
       if (current_domain?.state === DomainOutputDTOStateEnum.Disabled) {
         throw redirect({ to: '/domain/disabled' });
       }
-    } catch {
+    } catch (error) {
+      console.error('Auth check failed:', error);
       const redirectPath = location.pathname === '/login' ? '/' : location.pathname;
       throw redirect({ to: '/login', search: { redirect: redirectPath }, replace: true });
     }

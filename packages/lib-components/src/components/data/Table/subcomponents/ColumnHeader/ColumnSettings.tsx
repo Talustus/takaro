@@ -36,7 +36,7 @@ export function ColumnSettings<DataType extends object>({
       if (sort.desc) {
         return (
           <Tooltip>
-            <Tooltip.Trigger asChild>
+            <Tooltip.Trigger>
               <IconButton
                 icon={<SortDescendingIcon />}
                 ariaLabel="toggle to ascending"
@@ -49,7 +49,7 @@ export function ColumnSettings<DataType extends object>({
       }
       return (
         <Tooltip>
-          <Tooltip.Trigger asChild>
+          <Tooltip.Trigger>
             <IconButton
               icon={<SortAscendingIcon />}
               ariaLabel="toggle to descending"
@@ -67,7 +67,7 @@ export function ColumnSettings<DataType extends object>({
       {sortingToggle}
       {header.column.getIsPinned() === 'left' && (
         <Tooltip>
-          <Tooltip.Trigger asChild>
+          <Tooltip.Trigger>
             <IconButton icon={<PinIcon />} ariaLabel="Unpin column" onClick={() => header.column.pin(false)} />
           </Tooltip.Trigger>
           <Tooltip.Content>Unpin column</Tooltip.Content>
@@ -75,7 +75,7 @@ export function ColumnSettings<DataType extends object>({
       )}
       {header.column.getIsPinned() === 'right' && (
         <Tooltip>
-          <Tooltip.Trigger asChild>
+          <Tooltip.Trigger>
             <IconButton
               icon={<PinIcon style={{ transform: 'scaleX(-1)' }} />}
               ariaLabel="Unpin column"
@@ -86,7 +86,7 @@ export function ColumnSettings<DataType extends object>({
         </Tooltip>
       )}
       <Dropdown>
-        <Dropdown.Trigger asChild>
+        <Dropdown.Trigger>
           <MenuTrigger isVisible={columnIsHovered}>
             <IconButton icon={<MenuIcon />} ariaLabel="column settings" />
           </MenuTrigger>

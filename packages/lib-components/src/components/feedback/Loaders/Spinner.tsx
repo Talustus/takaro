@@ -54,6 +54,8 @@ export interface SpinnerProps {
 export const Spinner: FC<SpinnerProps> = ({ size, color = 'primary' }) => {
   return (
     <Container
+      role="status"
+      aria-label="Loading"
       animate={{
         scale: [1, 2, 2, 1, 1],
         rotate: [0, 0, 270, 270, 0],

@@ -16,12 +16,12 @@ export const Route = createFileRoute('/_auth/_global/player/$playerId/info')({
 });
 
 function Component() {
-  const loadedPLayer = Route.useLoaderData();
+  const loadedPlayer = Route.useLoaderData();
   const { playerId } = Route.useParams();
 
   const { data: player } = useQuery({
     ...playerQueryOptions(playerId),
-    initialData: loadedPLayer,
+    initialData: loadedPlayer,
   });
 
   return (
@@ -123,12 +123,12 @@ const IpInfo: FC<{ ipInfo: IpHistoryOutputDTO[] }> = ({ ipInfo }) => {
             <HistoryItem key={`${ip.ip}-${ip.createdAt}-${index}`}>
               <HistoryEntry>
                 <MainText isFirst={isFirst} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <IpWhoisLink href={`https://scamalytics.com/ip/${ip.ip}`} target="_blank">
+                  <IpWhoisLink href={`https://scamalytics.com/ip/${ip.ip}`} target="_blank" rel="noopener noreferrer">
                     {ip.ip}
                   </IpWhoisLink>
                   {ip.country && (
                     <Tooltip>
-                      <Tooltip.Trigger asChild>
+                      <Tooltip.Trigger>
                         <span style={{ display: 'inline-flex' }}>
                           <CountryCodeToEmoji countryCode={ip.country} />
                         </span>
@@ -239,7 +239,9 @@ const SteamInfoCard: FC<{ player: PlayerOutputDTO }> = ({ player }) => {
     <InfoCard
       variant="outline"
       clickable
-      onClick={() => window.open(`https://steamcommunity.com/profiles/${player.steamId}`)}
+      onClick={() =>
+        window.open(`https://steamcommunity.com/profiles/${player.steamId}`, '_blank', 'noopener,noreferrer')
+      }
     >
       <InfoCard.Title label="Steam" />
       <InfoCard.Body>

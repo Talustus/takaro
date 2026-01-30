@@ -31,7 +31,7 @@ export default {
 
 export const Default: StoryFn<IconButtonProps & ExtraIconButtonStoryProps> = (args) => (
   <Tooltip>
-    <Tooltip.Trigger asChild>
+    <Tooltip.Trigger>
       <IconButton size={args.size} color={args.color} icon={args.icon} ariaLabel={args.tooltipLabel} />
     </Tooltip.Trigger>
     <Tooltip.Content>{args.tooltipLabel}</Tooltip.Content>
@@ -40,7 +40,7 @@ export const Default: StoryFn<IconButtonProps & ExtraIconButtonStoryProps> = (ar
 
 export const Badge: StoryFn<IconButtonProps & ExtraIconButtonStoryProps> = (args) => (
   <Tooltip>
-    <Tooltip.Trigger asChild>
+    <Tooltip.Trigger>
       <IconButton
         badge={args.badge}
         size={args.size}

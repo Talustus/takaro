@@ -426,7 +426,7 @@ const PogActions: FC<PogActionsProps> = ({ pog, gameServerName }) => {
   return (
     <>
       <Dropdown placement="left">
-        <Dropdown.Trigger asChild>
+        <Dropdown.Trigger>
           <IconButton icon={<ActionIcon />} ariaLabel="pog-actions" />
         </Dropdown.Trigger>
         <Dropdown.Menu>

@@ -7,7 +7,8 @@ interface ImportMetaEnv {
   readonly VITE_POSTHOG_PUBLIC_API_KEY: string;
   readonly VITE_BILLING_API_URL: string;
   readonly VITE_BILLING_MANAGE_URL: string;
-  readonly VITE_BILLING_ENABLED: boolean;
+  readonly VITE_BILLING_ENABLED: string;
+  readonly VITE_TAKARO_VERSION: string;
 }
 
 interface ImportMeta {

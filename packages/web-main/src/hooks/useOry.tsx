@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { AxiosError } from 'axios';
-import { createContext, useCallback, useContext } from 'react';
+import { createContext, useCallback, useContext, useMemo } from 'react';
 import { Configuration, FrontendApi } from '@ory/client';
 import { getConfigVar } from '../util/getConfigVar';
 
@@ -16,13 +16,17 @@ interface OryContext {
 const OryContext = createContext<OryContext | null>(null);
 
 export function OryProvider({ children }: { children: React.ReactNode }) {
-  const oryClient = new FrontendApi(
-    new Configuration({
-      basePath: getConfigVar('oryUrl'),
-      baseOptions: {
-        withCredentials: true,
-      },
-    }),
+  const oryClient = useMemo(
+    () =>
+      new FrontendApi(
+        new Configuration({
+          basePath: getConfigVar('oryUrl'),
+          baseOptions: {
+            withCredentials: true,
+          },
+        }),
+      ),
+    [],
   );
 
   const useOryError = (

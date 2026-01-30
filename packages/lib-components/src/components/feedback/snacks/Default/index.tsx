@@ -66,7 +66,7 @@ export const DefaultSnack = forwardRef<HTMLDivElement, DefaultSnackProps>(functi
         </TextContainer>
         <div style={{ width: '25px' }}>
           <Tooltip>
-            <Tooltip.Trigger asChild>
+            <Tooltip.Trigger>
               <IconButton icon={<CloseIcon />} ariaLabel="Dismiss snack popup" onClick={handleDismiss} />
             </Tooltip.Trigger>
             <Tooltip.Content>Dismiss</Tooltip.Content>

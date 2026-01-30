@@ -310,7 +310,7 @@ export const CommandConfigForm: FC<CommandConfigFormProps> = ({ command, readOnl
                   {!readOnly && (
                     <Column>
                       <Tooltip placement="right">
-                        <Tooltip.Trigger asChild>
+                        <Tooltip.Trigger>
                           <IconButton
                             disabled={index === 0}
                             onClick={() => {
@@ -324,7 +324,7 @@ export const CommandConfigForm: FC<CommandConfigFormProps> = ({ command, readOnl
                       </Tooltip>
 
                       <Tooltip placement="right">
-                        <Tooltip.Trigger asChild>
+                        <Tooltip.Trigger>
                           <IconButton
                             onClick={() => remove(index)}
                             icon={<CloseIcon size={16} cursor="pointer" />}
@@ -335,7 +335,7 @@ export const CommandConfigForm: FC<CommandConfigFormProps> = ({ command, readOnl
                       </Tooltip>
 
                       <Tooltip placement="right">
-                        <Tooltip.Trigger asChild>
+                        <Tooltip.Trigger>
                           <IconButton
                             disabled={index === fields.length - 1}
                             onClick={() => swap(index, index + 1)}

@@ -53,7 +53,7 @@ export const PermissionField: FC<PermissionFieldProps> = ({ index, id, remove, c
         </div>
         {!readOnly && (
           <Tooltip>
-            <Tooltip.Trigger asChild>
+            <Tooltip.Trigger>
               <IconButton
                 onClick={() => remove(index)}
                 icon={<RemoveIcon size={16} cursor="pointer" />}

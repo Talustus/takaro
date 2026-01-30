@@ -131,7 +131,7 @@ export const GameServerSelectView: FC<GameServerSelectQueryViewProps> = ({
           <Inner>
             <span>{serverName}</span>
             <Tooltip placement="right">
-              <Tooltip.Trigger asChild>
+              <Tooltip.Trigger>
                 <StatusDot isReachable={reachable} />
               </Tooltip.Trigger>
               <Tooltip.Content>{reachable ? 'Server online' : 'Server offline'}</Tooltip.Content>

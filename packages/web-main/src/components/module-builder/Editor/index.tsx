@@ -287,7 +287,7 @@ export const Editor: FC<EditorProps> = ({ readOnly }) => {
         {dirtyFiles.has(activeFile) && (
           <div style={{ position: 'fixed', bottom: '20px', right: '40px', zIndex: 10000 }}>
             <Tooltip>
-              <Tooltip.Trigger asChild>
+              <Tooltip.Trigger>
                 <Button
                   icon={<SaveIcon />}
                   onClick={() => {

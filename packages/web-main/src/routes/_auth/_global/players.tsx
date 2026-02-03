@@ -323,7 +323,7 @@ const PlayerActions: FC<PlayerActionsProps> = ({ player }) => {
   return (
     <>
       <Dropdown placement="left">
-        <Dropdown.Trigger asChild>
+        <Dropdown.Trigger>
           <IconButton icon={<ActionIcon />} ariaLabel="player-actions" />
         </Dropdown.Trigger>
         <Dropdown.Menu>

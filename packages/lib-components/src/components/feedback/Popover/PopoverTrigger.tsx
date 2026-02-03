@@ -1,45 +1,33 @@
-import { forwardRef, cloneElement, isValidElement, HTMLProps, PropsWithChildren } from 'react';
+import { forwardRef, cloneElement, isValidElement, HTMLProps, ReactElement } from 'react';
 import { usePopoverContext } from './PopoverContext';
 import { useMergeRefs } from '@floating-ui/react';
-import { ReactNode } from '@tanstack/react-router';
 
-export type PopoverTriggerProps = HTMLProps<HTMLElement> &
-  PropsWithChildren<{
-    asChild?: boolean;
-  }>;
+export interface PopoverTriggerProps extends Omit<HTMLProps<HTMLElement>, 'children'> {
+  children: ReactElement;
+}
 
 export const PopoverTrigger = forwardRef<HTMLElement, PopoverTriggerProps>(function PopoverTrigger(
-  { children, asChild = false, ...props },
+  { children, ...props },
   propRef,
 ) {
   const context = usePopoverContext();
-  const childrenRef = (children as ReactNode).ref;
+  const childrenRef = (children as ReactElement & { ref?: React.Ref<HTMLElement> }).ref;
   const ref = useMergeRefs([context.refs.setReference, propRef, childrenRef]);
 
-  // `asChild` allows the user to pass any element as the anchor
-  if (asChild && isValidElement(children)) {
-    return cloneElement(
-      children,
-      context.getReferenceProps({
-        ref,
-        ...props,
-        ...children.props,
-        'data-state': context.open ? 'open' : 'closed',
-        onFocus: props.onFocus,
-        onBlur: props.onBlur,
-      }),
-    );
+  if (!isValidElement(children)) {
+    throw new Error('Popover.Trigger requires a single React element as child');
   }
 
-  return (
-    <button
-      ref={ref}
-      type="button"
-      // The user can style the trigger based on the state
-      data-state={context.open ? 'open' : 'closed'}
-      {...context.getReferenceProps(props)}
-    >
-      {children}
-    </button>
-  );
+  const triggerProps = {
+    ...context.getReferenceProps({
+      ref,
+      ...props,
+      ...(children.props as object),
+      onFocus: props.onFocus,
+      onBlur: props.onBlur,
+    }),
+    'data-state': context.open ? 'open' : 'closed',
+  };
+
+  return cloneElement(children, triggerProps);
 });

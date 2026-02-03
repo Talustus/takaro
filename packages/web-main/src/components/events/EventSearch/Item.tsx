@@ -24,7 +24,7 @@ export const Item = forwardRef<HTMLDivElement, ItemProps & React.HTMLProps<HTMLD
       aria-selected={active}
       style={{
         background: active ? theme.colors['primary'] : 'none',
-        padding: `${theme.spacing['0_5']} ${theme.spacing['1']}}`,
+        padding: `${theme.spacing['0_5']} ${theme.spacing['1']}`,
         cursor: 'default',
       }}
     >

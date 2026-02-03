@@ -53,12 +53,7 @@ const TeleportPlayerForm: FC<TeleportPlayerForm> = ({ gameServerId, playerId, on
   const { mutate, error } = useTeleportPlayer();
 
   const onSubmit: SubmitHandler<z.infer<typeof validationSchema>> = ({ x, y, z }) => {
-    try {
-      mutate({ playerId, gameServerId, x, y, z });
-      onSuccess();
-    } catch {
-      /* noop */
-    }
+    mutate({ playerId, gameServerId, x, y, z }, { onSuccess });
   };
 
   return (

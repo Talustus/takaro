@@ -24,6 +24,7 @@ import { ITakaroQuery } from '@takaro/db';
 import { PaginatedOutput } from '../db/base.js';
 import {
   HookEvents,
+  GameEvents,
   isDiscordMessageEvent,
   EventPayload,
   EventTypes,
@@ -315,7 +316,11 @@ export class HookService extends TakaroService<HookModel, HookOutputDTO, HookCre
     const hooksAfterFilters = triggeredHooks
       // Regex checks
       .filter((hook) => {
-        if (!hook.regex) return true;
+        if (!hook.regex) {
+          // For log-type hooks, empty regex should NOT match everything (prevents infinite loops)
+          // For non-log hooks, empty regex is fine - they trigger on any event of their type
+          return hook.eventType !== GameEvents.LOG_LINE;
+        }
         if (!('msg' in eventData)) return false;
         if (typeof eventData.msg !== 'string') return false;
         const regex = new RegExp(hook.regex);

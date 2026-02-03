@@ -38,7 +38,7 @@ export const DialogHeading = forwardRef<HTMLHeadingElement, DialogHeadingProps>(
       </h4>
       {hasClose && (
         <Tooltip>
-          <Tooltip.Trigger asChild>
+          <Tooltip.Trigger>
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();

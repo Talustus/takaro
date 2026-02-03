@@ -76,7 +76,7 @@ export const ConsoleLine: FC<ConsoleLineProps> = ({ message, collapsed, style, i
           <p>{header}</p>
           {body && (
             <Tooltip>
-              <Tooltip.Trigger asChild>
+              <Tooltip.Trigger>
                 <ExpandIconContainer>
                   <EnterIcon onClick={() => setIsCollapsed(!isCollapsed)} size={14} />
                 </ExpandIconContainer>

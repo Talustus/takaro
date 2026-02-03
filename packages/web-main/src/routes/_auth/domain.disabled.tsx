@@ -35,7 +35,7 @@ function Component() {
           You have used everything within your free plan. <br /> It will be paused until you upgrade to a paid
           subscription
         </p>
-        <p>Get your first moth risk-free. If you do not like it, we will refund you.</p>
+        <p>Get your first month risk-free. If you do not like it, we will refund you.</p>
         <br />
         <ButtonContainer>
           <Button>Upgrade to Starter plan</Button>

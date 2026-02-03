@@ -132,7 +132,7 @@ function Component() {
                 <MaxUsage value={customModuleCount} total={maxModulesCount} unit="Modules" />
                 <PermissionsGuard requiredPermissions={[PERMISSIONS.ManageModules]}>
                   <Dropdown placement="bottom-end">
-                    <Dropdown.Trigger asChild>
+                    <Dropdown.Trigger>
                       <Button>Module actions</Button>
                     </Dropdown.Trigger>
                     <Dropdown.Menu>

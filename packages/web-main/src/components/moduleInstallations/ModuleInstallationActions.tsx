@@ -104,7 +104,7 @@ export const ModuleInstallationActions: FC<ModuleInstallationActionProps> = ({ m
         />
       )}
       <Dropdown>
-        <Dropdown.Trigger asChild>
+        <Dropdown.Trigger>
           <IconButton icon={<MenuIcon />} ariaLabel="Settings" />
         </Dropdown.Trigger>
         <Dropdown.Menu>
@@ -165,7 +165,7 @@ export const ModuleInstallationActions: FC<ModuleInstallationActionProps> = ({ m
           onOpenChange={setShowInstallOtherVersionPopover}
           placement="bottom"
         >
-          <Popover.Trigger asChild>
+          <Popover.Trigger>
             <div></div>
           </Popover.Trigger>
           <Popover.Content>

@@ -53,7 +53,7 @@ export const RolesTableView = () => {
       header: 'Name',
       cell: (info) => (
         <Tooltip placement="right">
-          <Tooltip.Trigger asChild>
+          <Tooltip.Trigger>
             <Link className="underline" to="/roles/view/$roleId" params={{ roleId: info.row.original.id }}>
               {info.getValue()}
             </Link>

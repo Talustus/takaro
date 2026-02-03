@@ -33,7 +33,6 @@ export function ColumnVisibility<DataType extends object>({
   return (
     <Dropdown>
       <Dropdown.Trigger
-        asChild
         tooltipOptions={{
           onOpenChange: setOpenColumnVisibilityTooltip,
           open: openColumnVisibilityTooltip,

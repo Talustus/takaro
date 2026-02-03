@@ -51,7 +51,7 @@ export const ShopListingActions: FC<ShopListingActions> = ({ shopListingId, game
   return (
     <>
       <Dropdown>
-        <Dropdown.Trigger asChild>
+        <Dropdown.Trigger>
           <IconButton icon={<MenuIcon />} ariaLabel="Settings" />
         </Dropdown.Trigger>
         <Dropdown.Menu>

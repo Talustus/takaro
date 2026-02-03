@@ -18,7 +18,6 @@ export const ItemList = styled.div`
   background-color: ${({ theme }) => theme.colors.backgroundAlt};
   border: 1px solid ${({ theme }) => theme.colors.backgroundAccent};
   border-radius: ${({ theme }) => `0 0 ${theme.borderRadius.medium} ${theme.borderRadius.medium}`};
-  overflowy: 'auto';
 `;
 
 export const Wrapper = styled.div`

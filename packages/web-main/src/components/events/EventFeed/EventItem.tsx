@@ -377,7 +377,7 @@ export const EventItem: FC<EventItemProps> = ({ event }) => {
           />
 
           <Dropdown placement="left">
-            <Dropdown.Trigger asChild>
+            <Dropdown.Trigger>
               <IconButton icon={<MenuIcon />} ariaLabel="click me" />
             </Dropdown.Trigger>
             <Dropdown.Menu>

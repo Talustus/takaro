@@ -239,7 +239,7 @@ const ShopOrderActions: FC<ShopOrderActionsProps> = ({ shopOrder, gameServerId, 
   return (
     <>
       <Dropdown placement="left">
-        <Dropdown.Trigger asChild>
+        <Dropdown.Trigger>
           <IconButton icon={<ActionIcon />} ariaLabel="shop-order-actions" />
         </Dropdown.Trigger>
         <Dropdown.Menu>

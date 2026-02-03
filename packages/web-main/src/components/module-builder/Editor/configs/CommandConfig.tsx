@@ -38,7 +38,7 @@ const validationSchema = z.object({
     z.object({
       commandId: z.string().min(1, { message: 'Command ID is required' }),
       name: z.string().min(1, { message: 'Name is required' }),
-      type: z.enum(['string', 'number', 'boolean', 'player'], {
+      type: z.enum(['string', 'number', 'boolean', 'player', 'onlinePlayer'], {
         errorMap: () => {
           return {
             message: 'Invalid argument type',
@@ -68,6 +68,10 @@ const argumentTypeSelectOptions = [
   {
     name: 'Player',
     value: 'player',
+  },
+  {
+    name: 'Online Player',
+    value: 'onlinePlayer',
   },
 ];
 
@@ -138,7 +142,7 @@ export const CommandConfigForm: FC<CommandConfigFormProps> = ({ command, readOnl
           return {
             commandId: command.id,
             name: arg.name,
-            type: arg.type as 'string' | 'number' | 'boolean' | 'player',
+            type: arg.type as 'string' | 'number' | 'boolean' | 'player' | 'onlinePlayer',
             position: arg.position,
             helpText: arg.helpText,
             defaultValue: arg.defaultValue ?? null,
@@ -306,7 +310,7 @@ export const CommandConfigForm: FC<CommandConfigFormProps> = ({ command, readOnl
                   {!readOnly && (
                     <Column>
                       <Tooltip placement="right">
-                        <Tooltip.Trigger asChild>
+                        <Tooltip.Trigger>
                           <IconButton
                             disabled={index === 0}
                             onClick={() => {
@@ -320,7 +324,7 @@ export const CommandConfigForm: FC<CommandConfigFormProps> = ({ command, readOnl
                       </Tooltip>
 
                       <Tooltip placement="right">
-                        <Tooltip.Trigger asChild>
+                        <Tooltip.Trigger>
                           <IconButton
                             onClick={() => remove(index)}
                             icon={<CloseIcon size={16} cursor="pointer" />}
@@ -331,7 +335,7 @@ export const CommandConfigForm: FC<CommandConfigFormProps> = ({ command, readOnl
                       </Tooltip>
 
                       <Tooltip placement="right">
-                        <Tooltip.Trigger asChild>
+                        <Tooltip.Trigger>
                           <IconButton
                             disabled={index === fields.length - 1}
                             onClick={() => swap(index, index + 1)}

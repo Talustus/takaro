@@ -79,7 +79,7 @@ export const CopyId: FC<CopyIdProps> = ({
           color="backgroundAccent"
         />
         <Tooltip>
-          <Tooltip.Trigger asChild>
+          <Tooltip.Trigger>
             <LinkButton
               onClick={(e) => {
                 e.stopPropagation();

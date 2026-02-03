@@ -58,7 +58,7 @@ function Component() {
             <span>
               {unClaimedShopOrdersCount > 0 && (
                 <Tooltip>
-                  <Tooltip.Trigger asChild>
+                  <Tooltip.Trigger>
                     <Badge variant="info" animate>
                       {unClaimedShopOrdersCount}
                     </Badge>

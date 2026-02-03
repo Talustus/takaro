@@ -158,7 +158,7 @@ export const ModuleInstallationsTableView: FC<ModuleInstallationsTableViewProps>
         const author = row.original.author || 'Unknown';
         return author === 'Takaro' ? (
           <Tooltip>
-            <Tooltip.Trigger asChild>
+            <Tooltip.Trigger>
               <Chip color="primary" label="Official" />
             </Tooltip.Trigger>
             <Tooltip.Content>This module is developed and maintained by the Takaro team.</Tooltip.Content>

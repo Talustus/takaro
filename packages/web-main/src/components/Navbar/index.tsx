@@ -178,7 +178,7 @@ export const Navbar: FC<NavbarProps> = ({ showGameServerNav }) => {
         }}
       >
         <Tooltip>
-          <Tooltip.Trigger asChild>
+          <Tooltip.Trigger>
             <IconButton
               icon={isCollapsed ? <ExpandIcon /> : <CollapseIcon />}
               onClick={toggleCollapse}
@@ -217,7 +217,7 @@ export const Navbar: FC<NavbarProps> = ({ showGameServerNav }) => {
           </div>
           <IconNav>
             <Tooltip>
-              <Tooltip.Trigger asChild>
+              <Tooltip.Trigger>
                 <a href="https://aka.takaro.io/github" target="_blank" rel="noreferrer">
                   <GithubIcon size={18} />
                 </a>
@@ -225,7 +225,7 @@ export const Navbar: FC<NavbarProps> = ({ showGameServerNav }) => {
               <Tooltip.Content>Github</Tooltip.Content>
             </Tooltip>
             <Tooltip>
-              <Tooltip.Trigger asChild>
+              <Tooltip.Trigger>
                 <a href="https://docs.takaro.io" target="_blank" rel="noreferrer">
                   <DocumentationIcon size={18} />
                 </a>
@@ -233,7 +233,7 @@ export const Navbar: FC<NavbarProps> = ({ showGameServerNav }) => {
               <Tooltip.Content>Documentation</Tooltip.Content>
             </Tooltip>
             <Tooltip>
-              <Tooltip.Trigger asChild>
+              <Tooltip.Trigger>
                 <a href="https://aka.takaro.io/discord" target="_blank" rel="noreferrer">
                   <DiscordIcon size={18} />
                 </a>

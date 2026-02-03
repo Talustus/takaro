@@ -100,7 +100,7 @@ export const GenericDurationField = forwardRef<HTMLDivElement, GenericDurationFi
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <Popover.Trigger asChild>
+      <Popover.Trigger>
         <DurationContainer
           disabled={disabled}
           readOnly={readOnly}

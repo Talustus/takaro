@@ -21,7 +21,7 @@ export const ZoomControls: FC<ZoomControlsProps> = ({ zoom }) => {
   return (
     <Controls>
       <Tooltip placement="left">
-        <Tooltip.Trigger asChild>
+        <Tooltip.Trigger>
           <IconButton
             icon={<ZoomInIcon />}
             ariaLabel="zoom in"
@@ -31,7 +31,7 @@ export const ZoomControls: FC<ZoomControlsProps> = ({ zoom }) => {
         <Tooltip.Content>Zoom in</Tooltip.Content>
       </Tooltip>
       <Tooltip placement="left">
-        <Tooltip.Trigger asChild>
+        <Tooltip.Trigger>
           <IconButton
             icon={<ZoomOutIcon />}
             ariaLabel="zoom in"

@@ -174,7 +174,7 @@ export const ShopTableView: FC<ShopViewProps> = ({
           <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
             {categories.map((cat) => (
               <Popover key={cat.id}>
-                <Popover.Trigger asChild>
+                <Popover.Trigger>
                   <span
                     style={{
                       fontSize: '1.2rem',
@@ -228,7 +228,7 @@ export const ShopTableView: FC<ShopViewProps> = ({
 
       cell: (info) => (
         <Popover>
-          <Popover.Trigger asChild>
+          <Popover.Trigger>
             <Button size="small">Buy listing</Button>
           </Popover.Trigger>
           <Popover.Content>

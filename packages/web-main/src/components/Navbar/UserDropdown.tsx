@@ -71,7 +71,7 @@ export const UserDropdown = () => {
   const { name, email } = data.user;
   return (
     <Dropdown placement="top">
-      <Dropdown.Trigger asChild>
+      <Dropdown.Trigger>
         <User role="button">
           <InitialsBlock>{getInitials(name ? name : 'u u')}</InitialsBlock>
           <Name>

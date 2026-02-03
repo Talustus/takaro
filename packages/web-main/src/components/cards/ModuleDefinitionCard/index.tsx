@@ -132,7 +132,7 @@ export const ModuleDefinitionCard: FC<IModuleCardProps> = ({ mod, canCopyModule 
                 )}
 
                 <Dropdown>
-                  <Dropdown.Trigger asChild>
+                  <Dropdown.Trigger>
                     <IconButton icon={<MenuIcon />} ariaLabel="Settings" />
                   </Dropdown.Trigger>
                   <Dropdown.Menu>

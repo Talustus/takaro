@@ -99,9 +99,12 @@ export const GenericSelectField: FC<GenericSelectFieldProps> & SubComponentTypes
 
   const [pointer, setPointer] = useState(false);
 
-  if (!open && pointer) {
-    setPointer(false);
-  }
+  // Reset pointer state when dropdown closes
+  useEffect(() => {
+    if (!open && pointer) {
+      setPointer(false);
+    }
+  }, [open, pointer]);
 
   const { x, y, refs, strategy, context } = useFloating({
     open,
@@ -154,7 +157,7 @@ export const GenericSelectField: FC<GenericSelectFieldProps> & SubComponentTypes
       // TODO
       // selectedIndex: multiple ? null : (selectedIndex as number),
       onNavigate: setActiveIndex,
-      scrollItemIntoView: multiple ? false : true,
+      scrollItemIntoView: !multiple,
     }),
   ]);
 
